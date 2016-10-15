@@ -4,11 +4,7 @@ KEY  = "<INSERT WIFI KEY HERE>"
 HOST = "danielrojas.net"
 URL  = "http://danielrojas.net/iot/traintimes/bvg.php"
 
-wifi.setmode(wifi.STATION)
-wifi.sta.config(SSID,KEY)
-wifi.sta.connect()
-tmr.alarm(0, 60000, 1,
-function()
+function fetchdata()
     conn=net.createConnection(net.TCP, 0)
     conn:on("receive",
     function(conn, payload)
@@ -33,4 +29,12 @@ function()
         --print ("disconnected")
     end)
     conn:connect(80,HOST)
-end)
+end
+
+wifi.setmode(wifi.STATION)
+wifi.sta.config(SSID,KEY)
+wifi.sta.connect()
+
+fetchdata()
+
+tmr.alarm(0, 60000, 1, fetchdata)
