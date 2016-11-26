@@ -1,6 +1,23 @@
 import network\n
 import socket\n
 \n
+displays = [\n
+    ["Strassmannstr",\n
+        ["Friedrich-Ludwig-Jahn-Sportpark", "S+U Hauptbahnhof"],\n
+        ["S+U Warschauer Str."]]\n
+    ,\n
+    ["S+Landsberger+Allee+%28Berlin%29",\n
+        ["Ringbahn S 42"],\n
+        ["Ringbahn S 41"],\n
+        ["S Blankenburg (Berlin)","S+U Pankow (Berlin)","S Birkenwerder Bhf"],\n
+        ["S Flughafen Berlin-Sch&#246;nefeld Bhf","Sch&#246;neweide","S Gr&#252;nau (Berlin)"]]\n
+    ,\n
+    ["Bersarinplatz",\n
+        ["Lichtenberg"],\n
+        ["Sch&#246;neweide"]]\n
+    ]\n
+\n
+results = [[[],[]],[[],[],[],[]],[[],[]]]\n
 \n
 def http_get(url):\n
     _, _, host, path = url.split('/', 3)\n
@@ -33,4 +50,9 @@ print("Hello!")\n
 wlan = network.WLAN(network.STA_IF)\n
 wlan.connect(my_ap, my_pw)\n
 print("Online!")\n
-http_get("http://micropython.org/ks/test.html")\n
+for staindex, station in enumerate(displays):\n
+    url = "http://mobil.bvg.de/Fahrinfo/bin/stboard.bin/dox?input=" + station[0] + "&start=Suchen&boardType=depRT"\n
+    print station[0]\n
+    print url\n
+    directions = station[1:]\n
+    http_get(url)\n
