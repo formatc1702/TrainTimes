@@ -74,8 +74,8 @@ print("Online!")\n
 # \n
 for sta_index, station in enumerate(displays):\n
     url = "http://mobil.bvg.de/Fahrinfo/bin/stboard.bin/dox?input=" + station[0] + "&start=Suchen&boardType=depRT"\n
-    print(station[0])\n
-    print(url)\n
+    # print(station[0])\n
+    # print(url)\n
     directions = station[1:]\n
     http_get(url,sta_index)\n
 \n
