@@ -1,0 +1,3 @@
+YourWiFiSSIDHere
+YourWiFiPasswordHere
+# insert your SSID/password, rename this file to wificonfig.txt and remove this line

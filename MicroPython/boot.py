@@ -59,8 +59,10 @@ def http_get(url,sta_index):\n
     #     else:\n
     #         break\n
 \n
-my_ap = "RelaxenWatchenDasBlinkenlichten"\n
-my_pw = "murcielago1989"\n
+wifi_config = open("wificonfig.txt","r")\n
+my_ap = wifi_config.readline().rstrip()\n
+my_pw = wifi_config.readline().rstrip()\n
+wifi_config.close()\n
 print("Hello!")\n
 wlan = network.WLAN(network.STA_IF)\n
 wlan.connect(my_ap, my_pw)\n
