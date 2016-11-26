@@ -17,7 +17,7 @@ displays = [\n
         ["Sch&#246;neweide"]]\n
     ]\n
 \n
-results = [[[],[]],[[],[],[],[]],[[],[]]]\n
+# results = [[[],[]],[[],[],[],[]],[[],[]]]\n
 \n
 def http_get(url):\n
     _, _, host, path = url.split('/', 3)\n
@@ -32,11 +32,9 @@ def http_get(url):\n
             print(str(data, 'utf8'), end='')\n
         else:\n
             break\n
-
     # for line in s.readline():\n
     #     print(line)\n
     # print("Done!")\n
-
     # while True:\n
     #     data = s.recv(100)\n
     #     if data:\n
@@ -50,9 +48,14 @@ print("Hello!")\n
 wlan = network.WLAN(network.STA_IF)\n
 wlan.connect(my_ap, my_pw)\n
 print("Online!")\n
+# \n
+# bla = ['a','b','c']\n
+# for idx,blu in enumerate(bla):\n
+#     print(blu)\n
+# \n
 for staindex, station in enumerate(displays):\n
     url = "http://mobil.bvg.de/Fahrinfo/bin/stboard.bin/dox?input=" + station[0] + "&start=Suchen&boardType=depRT"\n
-    print station[0]\n
-    print url\n
+    print(station[0])\n
+    print(url)\n
     directions = station[1:]\n
     http_get(url)\n
