@@ -35,14 +35,14 @@ displays = [
 
 results = [[[],[]],[[],[],[],[]],[[],[]]]
 
-print results
+# print results
 
 # station -> direction -> destination
 
 for sta_index, station in enumerate(displays):
     url = 'http://mobil.bvg.de/Fahrinfo/bin/stboard.bin/dox?input=' + station[0] + '&start=Suchen&boardType=depRT'
-    print station[0]
-    print url
+    # print station[0]
+    # print url
 
     directions = station[1:]
 
@@ -51,22 +51,30 @@ for sta_index, station in enumerate(displays):
 
 
     for line in response: # where is the actual tram going?
-        for dir_index, direction in enumerate(directions): # iterate through all directions tram can go at one station
-            for destination_want in direction: # iterate through all destinations in that direction
-                if destination_want in line: # is the tram going where we want it to?
-                    print str(dir_index) + '...' + line.rstrip() + '...' + destination_want
-                    response.readline()
-                    response.readline()
-                    response.readline()
-                    # print response.readline()
-                    results[sta_index][dir_index] += [strip_tags(response.readline()).rstrip()]
-            continue
-            # print destination_want
-            # if destination_want in destination_is:
-            #     print 'match!'
+        if line.startswith('Date:'):
+            date_str = line[6:-1]
+            print(date_str)                     # Sat, 26 Nov 2016 20:23:09 GMT
+            date_obj = datetime.strptime(date_str, '%a, %d %b %Y %H:%M:%S %Z')
+            print(date_obj.hour)
+            print(date_obj.minute)
+            print(date_obj.second)
+        else:
+            for dir_index, direction in enumerate(directions): # iterate through all directions tram can go at one station
+                for destination_want in direction: # iterate through all destinations in that direction
+                    if destination_want in line: # is the tram going where we want it to?
+                        # print str(dir_index) + '...' + line.rstrip() + '...' + destination_want
+                        response.readline()
+                        response.readline()
+                        response.readline()
+                        # print response.readline()
+                        results[sta_index][dir_index] += [strip_tags(response.readline()).rstrip()]
+                continue
+                # print destination_want
+                # if destination_want in destination_is:
+                #     print 'match!'
 
-    # for direction in station[1:]:
-    #     print '  ', direction
+        # for direction in station[1:]:
+        #     print '  ', direction
 
 for idx_station, station in enumerate(results):
     print displays[idx_station][0]
