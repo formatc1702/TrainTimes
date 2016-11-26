@@ -1,5 +1,6 @@
 import network\n
 import socket\n
+# from datetime import datetime\n
 \n
 displays = [\n
     ["Strassmannstr",\n
@@ -17,9 +18,9 @@ displays = [\n
         ["Sch&#246;neweide"]]\n
     ]\n
 \n
-# results = [[[],[]],[[],[],[],[]],[[],[]]]\n
+results = [[[],[]],[[],[],[],[]],[[],[]]]\n
 \n
-def http_get(url):\n
+def http_get(url,sta_index):\n
     _, _, host, path = url.split('/', 3)\n
     addr = socket.getaddrinfo(host, 80)[0][-1]\n
     s = socket.socket()\n
@@ -27,9 +28,25 @@ def http_get(url):\n
     print("Socket connected!")\n
     s.send(bytes("GET /%s HTTP/1.0\\r\\nHost: %s\\r\\n\\r\\n" % (path, host), "utf8"))\n
     while True:\n
-        data = s.readline()\n
-        if data:\n
-            print(str(data, 'utf8'), end='')\n
+        line = s.readline()\n
+        if line:\n
+            if line.startswith('Date:'):\n
+                date_str = line[6:-1]\n
+                # print(date_str)                     # Sat, 26 Nov 2016 20:23:09 GMT\n
+                # date_obj = datetime.strptime(date_str, '%a, %d %b %Y %H:%M:%S %Z')\n
+                # print(date_obj.hour)\n
+                # print(date_obj.minute)\n
+                # print(date_obj.second)\n
+            else:\n
+                for dir_index, direction in enumerate(directions): # iterate through all directions tram can go at one station\n
+                    for destination_want in direction: # iterate through all destinations in that direction\n
+                        if destination_want in line: # is the tram going where we want it to?\n
+                            # print str(dir_index) + '...' + line.rstrip() + '...' + destination_want\n
+                            s.readline()\n
+                            s.readline()\n
+                            s.readline()\n
+                            # print response.readline()\n
+                            results[sta_index][dir_index] += [s.readline()[12:17]]\n
         else:\n
             break\n
     # for line in s.readline():\n
@@ -53,9 +70,14 @@ print("Online!")\n
 # for idx,blu in enumerate(bla):\n
 #     print(blu)\n
 # \n
-for staindex, station in enumerate(displays):\n
+for sta_index, station in enumerate(displays):\n
     url = "http://mobil.bvg.de/Fahrinfo/bin/stboard.bin/dox?input=" + station[0] + "&start=Suchen&boardType=depRT"\n
     print(station[0])\n
     print(url)\n
     directions = station[1:]\n
-    http_get(url)\n
+    http_get(url,sta_index)\n
+\n
+for idx_station, station in enumerate(results):\n
+    print(displays[idx_station][0])\n
+    for direction in station:\n
+        print (direction)\n
