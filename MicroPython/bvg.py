@@ -2,10 +2,11 @@ import network
 import usocket as socket
 import ustruct as struct
 import utime   as time
+from machine import UART # connect D4 pin (TX) to RX line on the display
 # import datetime
 # from datetime import datetime
 
-debug_mode = False
+debug_mode = True
 
 def debug(*args,**kwargs):
     if debug_mode == True:
@@ -120,8 +121,12 @@ for sta_index, station in enumerate(displays):
     directions = station[1:]
     http_get(url,sta_index,now)
 
-# TODO: Add padding with -999 at the end
-print("{")
+wlan.disconnect()
+
+uart = UART(1,9600)
+
+uart.write('{')
+uart.write('\n')
 for idx_station, station in enumerate(results):
     debug(displays[idx_station][0])
     for direction in station:
@@ -131,8 +136,10 @@ for idx_station, station in enumerate(results):
         if n < 5:
             for i in  range(n,5):
                 direction += [-999]
+        debug (direction)
         debug (len(direction))
-        print (direction)
-print("}")
-
-wlan.disconnect()
+        uart.write(str(direction))
+        uart.write('\n')
+uart.write('}')
+uart.write('\n')
+uart.write('\n')
