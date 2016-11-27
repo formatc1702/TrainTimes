@@ -8,8 +8,6 @@ SoftwareSerial wifi(4,2);
 
 void WiFiInit() {
   wifi.begin(9600);
-  wifi.setTimeout(1000);
+  wifi.setTimeout(50);
 //  WiFiString = "";
 }
-
-
