@@ -1,0 +1,343 @@
+HTTP/1.1 200 OK
+Server: nginx/1.8.1
+Date: Sat, 26 Nov 2016 20:23:09 GMT
+Content-Type: text/html
+Content-Length: 180
+Last-Modified: Tue, 03 Dec 2013 00:16:26 GMT
+Connection: close
+Vary: Accept-Encoding
+ETag: "529d22da-b4"
+Accept-Ranges: bytes
+
+<!--?xml version="1.0" encoding="UTF-8"?-->
+<!DOCTYPE html>
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<title>mobil.BVG.de - fahrinfo</title>
+<link href="http://www.bvg.de/themes/bvg-1-0/img/favicon.ico" rel="shortcut icon">
+<meta http-equiv="expires" content="0">
+<meta http-equiv="Content-Style-Type" content="text/css">
+ <meta name="keywords" content="Fahrinfo, Berlin, Handy, Mobiltelefon, Fahrplan, Auskunft, Fahrplanauskunft, NV, BVG, Bus, Bahn, iPhone, Blackberry, Verkehr" lang="de">
+ <meta name="description" content="Fahrinfo - Die mobile Fahrplanauskunft der BVG von Berlin fr ihr Handy. Es werden zahlreiche Mobiltelefone untersttzt; auch iPhone und Blackberry." lang="de">
+ <meta name="DC.title" content="Fahrinfo-Berlin - Ihre mobile Fahrplanauskunft der BVG fr Berlin" lang="de">
+ <meta name="DC.subject" content="Fahrplanauskunft, Fahrinfo, Berlin, Handy, Mobiltelefon, Fahrplan, Auskunft, NV, BVG, Bus, Bahn, iPhone, Blackberry, Verkehr" lang="de">
+ <meta name="DC.description" content="Fahrinfo - Die mobile Fahrplanauskunft der BVG von Berlin fr ihr Handy. Es werden zahlreiche Mobiltelefone untersttzt; auch iPhone und Blackberry.">
+<meta name="DC.format" content="text/xhtml">
+<meta name="DC.publisher" content="Berliner Verkehrsbetriebe (BVG)">
+<meta name="DC.type" content="Service">
+<meta name="DC.coverage" content="Berlin" scheme="DCTERMS.TGN">
+<meta name="robots" content="index, nofollow">
+<link rel="stylesheet" type="text/css" href="strassmann_files/ivuXhtml.css">
+<link rel="stylesheet" type="text/css" href="strassmann_files/ajax_suggest.css">
+<link rel="stylesheet" type="text/css" href="strassmann_files/ivuTooltip.css">
+<meta name="viewport" content="initial-scale = 1.0, maximum-scale = 5.0, user-scalable = yes">
+</head>
+<body>
+<div class="main">
+<div id="header">
+<img src="strassmann_files/logo.gif" alt="BVG">
+<a href="http://mobil.bvg.de/Fahrinfo/bin/detect.bin/eox?">English</a><br>
+</div>
+<h1 class="ptitle">Ist-Abfahrtzeiten</h1>
+<div id="ivu_overview_input">
+<strong>Straßmannstr. (Berlin)</strong><br>
+Datum: 26.11.16
+</div>
+<div class="ivu_result_box">
+<table class="ivu_table" cellspacing="0" cellpadding="0" border="0">
+<!-- Kopfzeile -->
+<thead>
+<tr>
+<th>
+Abf.
+</th>
+<th>
+Fahrt/Linie
+</th>
+<th>
+Richtung
+</th>
+</tr>
+</thead>
+<!-- Tabellendatenzeilen -->
+<tbody>
+<tr class="ivu_table_bg1">
+<td><strong>21:34</strong></td>
+<td>
+<a href="http://mobil.bvg.de/Fahrinfo/bin/traininfo.bin/dox/501174/192200/280772/26696/80/ld=0.1&amp;backLink=sq&amp;input=9120515&amp;boardType=dep&amp;time=actual&amp;productsFilter=1111111111111111&amp;maxJourneys=">
+<strong>Tra  M10</strong>
+</a>
+</td>
+<td>
+S+U Hauptbahnhof
+</td>
+</tr>
+<tr class="ivu_table_bg2">
+<td><strong>21:35</strong></td>
+<td>
+<a href="http://mobil.bvg.de/Fahrinfo/bin/traininfo.bin/dox/3696/26350/645338/321445/80/ld=0.1&amp;backLink=sq&amp;input=9120515&amp;boardType=dep&amp;time=actual&amp;productsFilter=1111111111111111&amp;maxJourneys=">
+<strong>Tra  M10</strong>
+</a>
+</td>
+<td>
+S+U Warschauer Str.
+</td>
+</tr>
+<tr class="ivu_table_bg1">
+<td><strong>21:38</strong></td>
+<td>
+<a href="http://mobil.bvg.de/Fahrinfo/bin/traininfo.bin/dox/431349/168914/512582/112512/80/ld=0.1&amp;backLink=sq&amp;input=9120515&amp;boardType=dep&amp;time=actual&amp;productsFilter=1111111111111111&amp;maxJourneys=">
+<strong>Tra  M10</strong>
+</a>
+</td>
+<td>
+Friedrich-Ludwig-Jahn-Sportpark
+</td>
+</tr>
+<tr class="ivu_table_bg2">
+<td><strong>21:39</strong></td>
+<td>
+<a href="http://mobil.bvg.de/Fahrinfo/bin/traininfo.bin/dox/95202/56846/898642/417589/80/ld=0.1&amp;backLink=sq&amp;input=9120515&amp;boardType=dep&amp;time=actual&amp;productsFilter=1111111111111111&amp;maxJourneys=">
+<strong>Tra  M10</strong>
+</a>
+</td>
+<td>
+S+U Warschauer Str.
+</td>
+</tr>
+<tr class="ivu_table_bg1">
+<td><strong>21:43 <abbr title="(*) Für diese Fahrt ist zurzeit keine prognostizierte Abfahrtszeit möglich. Angezeigt wird die geplante Abfahrtszeit.">*</abbr></strong></td>
+<td>
+<a href="http://mobil.bvg.de/Fahrinfo/bin/traininfo.bin/dox/913215/329547/972796/182018/80/ld=0.1&amp;backLink=sq&amp;input=9120515&amp;boardType=dep&amp;time=actual&amp;productsFilter=1111111111111111&amp;maxJourneys=">
+<strong>Tra  M10</strong>
+</a>
+</td>
+<td>
+S+U Hauptbahnhof
+</td>
+</tr>
+<tr class="ivu_table_bg2">
+<td><strong>21:46</strong></td>
+<td>
+<a href="http://mobil.bvg.de/Fahrinfo/bin/traininfo.bin/dox/568641/214664/105706/136737/80/ld=0.1&amp;backLink=sq&amp;input=9120515&amp;boardType=dep&amp;time=actual&amp;productsFilter=1111111111111111&amp;maxJourneys=">
+<strong>Tra  M10</strong>
+</a>
+</td>
+<td>
+S+U Warschauer Str.
+</td>
+</tr>
+<tr class="ivu_table_bg1">
+<td><strong>21:48</strong></td>
+<td>
+<a href="http://mobil.bvg.de/Fahrinfo/bin/traininfo.bin/dox/820794/298729/400696/73255/80/ld=0.1&amp;backLink=sq&amp;input=9120515&amp;boardType=dep&amp;time=actual&amp;productsFilter=1111111111111111&amp;maxJourneys=">
+<strong>Tra  M10</strong>
+</a>
+</td>
+<td>
+Friedrich-Ludwig-Jahn-Sportpark
+</td>
+</tr>
+<tr class="ivu_table_bg2">
+<td><strong>21:49 <abbr>*</abbr></strong></td>
+<td>
+<a href="http://mobil.bvg.de/Fahrinfo/bin/traininfo.bin/dox/237384/104240/787922/314836/80/ld=0.1&amp;backLink=sq&amp;input=9120515&amp;boardType=dep&amp;time=actual&amp;productsFilter=1111111111111111&amp;maxJourneys=">
+<strong>Tra  M10</strong>
+</a>
+</td>
+<td>
+S+U Warschauer Str.
+</td>
+</tr>
+<tr class="ivu_table_bg1">
+<td><strong>21:51</strong></td>
+<td>
+<a href="http://mobil.bvg.de/Fahrinfo/bin/traininfo.bin/dox/691170/255508/762064/150651/80/ld=0.1&amp;backLink=sq&amp;input=9120515&amp;boardType=dep&amp;time=actual&amp;productsFilter=1111111111111111&amp;maxJourneys=">
+<strong>Tra  M10</strong>
+</a>
+</td>
+<td>
+S+U Warschauer Str.
+</td>
+</tr>
+<tr class="ivu_table_bg2">
+<td><strong>21:53</strong></td>
+<td>
+<a href="http://mobil.bvg.de/Fahrinfo/bin/traininfo.bin/dox/45279/40235/127722/48794/80/ld=0.1&amp;backLink=sq&amp;input=9120515&amp;boardType=dep&amp;time=actual&amp;productsFilter=1111111111111111&amp;maxJourneys=">
+<strong>Tra  M10</strong>
+</a>
+</td>
+<td>
+S+U Hauptbahnhof
+</td>
+</tr>
+<tr class="ivu_table_bg1">
+<td><strong>21:58</strong></td>
+<td>
+<a href="http://mobil.bvg.de/Fahrinfo/bin/traininfo.bin/dox/218043/97812/140934/2220/80/ld=0.1&amp;backLink=sq&amp;input=9120515&amp;boardType=dep&amp;time=actual&amp;productsFilter=1111111111111111&amp;maxJourneys=">
+<strong>Tra  M10</strong>
+</a>
+</td>
+<td>
+Friedrich-Ludwig-Jahn-Sportpark
+</td>
+</tr>
+<tr class="ivu_table_bg2">
+<td><strong>21:59</strong></td>
+<td>
+<a href="http://mobil.bvg.de/Fahrinfo/bin/traininfo.bin/dox/368085/147807/316278/35448/80/ld=0.1&amp;backLink=sq&amp;input=9120515&amp;boardType=dep&amp;time=actual&amp;productsFilter=1111111111111111&amp;maxJourneys=">
+<strong>Tra  M10</strong>
+</a>
+</td>
+<td>
+S+U Warschauer Str.
+</td>
+</tr>
+<tr class="ivu_table_bg1">
+<td><strong>22:03</strong></td>
+<td>
+<a href="http://mobil.bvg.de/Fahrinfo/bin/traininfo.bin/dox/950418/341948/954962/160702/80/ld=0.1&amp;backLink=sq&amp;input=9120515&amp;boardType=dep&amp;time=actual&amp;productsFilter=1111111111111111&amp;maxJourneys=">
+<strong>Tra  M10</strong>
+</a>
+</td>
+<td>
+S+U Hauptbahnhof
+</td>
+</tr>
+<tr class="ivu_table_bg2">
+<td><strong>22:04</strong></td>
+<td>
+<a href="http://mobil.bvg.de/Fahrinfo/bin/traininfo.bin/dox/406314/160555/241294/14835/80/ld=0.1&amp;backLink=sq&amp;input=9120515&amp;boardType=dep&amp;time=actual&amp;productsFilter=1111111111111111&amp;maxJourneys=">
+<strong>Tra  M10</strong>
+</a>
+</td>
+<td>
+S+U Warschauer Str.
+</td>
+</tr>
+<tr class="ivu_table_bg1">
+<td><strong>22:08</strong></td>
+<td>
+<a href="http://mobil.bvg.de/Fahrinfo/bin/traininfo.bin/dox/312144/129179/799422/295670/80/ld=0.1&amp;backLink=sq&amp;input=9120515&amp;boardType=dep&amp;time=actual&amp;productsFilter=1111111111111111&amp;maxJourneys=">
+<strong>Tra  M10</strong>
+</a>
+</td>
+<td>
+Friedrich-Ludwig-Jahn-Sportpark
+</td>
+</tr>
+<tr class="ivu_table_bg2">
+<td><strong>22:09</strong></td>
+<td>
+<a href="http://mobil.bvg.de/Fahrinfo/bin/traininfo.bin/dox/655914/243750/237736/99775/80/ld=0.1&amp;backLink=sq&amp;input=9120515&amp;boardType=dep&amp;time=actual&amp;productsFilter=1111111111111111&amp;maxJourneys=">
+<strong>Tra  M10</strong>
+</a>
+</td>
+<td>
+S+U Warschauer Str.
+</td>
+</tr>
+<tr class="ivu_table_bg1">
+<td><strong>22:13 <abbr>*</abbr></strong></td>
+<td>
+<a href="http://mobil.bvg.de/Fahrinfo/bin/traininfo.bin/dox/655533/243653/138128/149475/80/ld=0.1&amp;backLink=sq&amp;input=9120515&amp;boardType=dep&amp;time=actual&amp;productsFilter=1111111111111111&amp;maxJourneys=">
+<strong>Tra  M10</strong>
+</a>
+</td>
+<td>
+S+U Hauptbahnhof
+</td>
+</tr>
+<tr class="ivu_table_bg2">
+<td><strong>22:14</strong></td>
+<td>
+<a href="http://mobil.bvg.de/Fahrinfo/bin/traininfo.bin/dox/823647/299667/394934/77092/80/ld=0.1&amp;backLink=sq&amp;input=9120515&amp;boardType=dep&amp;time=actual&amp;productsFilter=1111111111111111&amp;maxJourneys=">
+<strong>Tra  M10</strong>
+</a>
+</td>
+<td>
+S+U Warschauer Str.
+</td>
+</tr>
+<tr class="ivu_table_bg1">
+<td><strong>22:18</strong></td>
+<td>
+<a href="http://mobil.bvg.de/Fahrinfo/bin/traininfo.bin/dox/970353/348582/948620/150867/80/ld=0.1&amp;backLink=sq&amp;input=9120515&amp;boardType=dep&amp;time=actual&amp;productsFilter=1111111111111111&amp;maxJourneys=">
+<strong>Tra  M10</strong>
+</a>
+</td>
+<td>
+Friedrich-Ludwig-Jahn-Sportpark
+</td>
+</tr>
+<tr class="ivu_table_bg2">
+<td><strong>22:19</strong></td>
+<td>
+<a href="http://mobil.bvg.de/Fahrinfo/bin/traininfo.bin/dox/471081/182139/617546/151752/80/ld=0.1&amp;backLink=sq&amp;input=9120515&amp;boardType=dep&amp;time=actual&amp;productsFilter=1111111111111111&amp;maxJourneys=">
+<strong>Tra  M10</strong>
+</a>
+</td>
+<td>
+S+U Warschauer Str.
+</td>
+</tr>
+<tr class="ivu_table_bg1">
+<td><strong>22:23</strong></td>
+<td>
+<a href="http://mobil.bvg.de/Fahrinfo/bin/traininfo.bin/dox/417246/164224/388364/55129/80/ld=0.1&amp;backLink=sq&amp;input=9120515&amp;boardType=dep&amp;time=actual&amp;productsFilter=1111111111111111&amp;maxJourneys=">
+<strong>Tra  M10</strong>
+</a>
+</td>
+<td>
+S+U Hauptbahnhof
+</td>
+</tr>
+<tr class="ivu_table_bg2">
+<td><strong>22:24</strong></td>
+<td>
+<a href="http://mobil.bvg.de/Fahrinfo/bin/traininfo.bin/dox/82677/52676/162630/53801/80/ld=0.1&amp;backLink=sq&amp;input=9120515&amp;boardType=dep&amp;time=actual&amp;productsFilter=1111111111111111&amp;maxJourneys=">
+<strong>Tra  M10</strong>
+</a>
+</td>
+<td>
+S+U Warschauer Str.
+</td>
+</tr>
+<tr class="ivu_table_bg1">
+<td><strong>22:28</strong></td>
+<td>
+<a href="http://mobil.bvg.de/Fahrinfo/bin/traininfo.bin/dox/178893/84762/215738/48247/80/ld=0.1&amp;backLink=sq&amp;input=9120515&amp;boardType=dep&amp;time=actual&amp;productsFilter=1111111111111111&amp;maxJourneys=">
+<strong>Tra  M10</strong>
+</a>
+</td>
+<td>
+Friedrich-Ludwig-Jahn-Sportpark
+</td>
+</tr>
+<tr class="ivu_table_bg2">
+<td><strong>22:29</strong></td>
+<td>
+<a href="http://mobil.bvg.de/Fahrinfo/bin/traininfo.bin/dox/958278/344538/512694/63086/80/ld=0.1&amp;backLink=sq&amp;input=9120515&amp;boardType=dep&amp;time=actual&amp;productsFilter=1111111111111111&amp;maxJourneys=">
+<strong>Tra  M10</strong>
+</a>
+</td>
+<td>
+S+U Warschauer Str.
+</td>
+</tr>
+</tbody></table>
+</div>
+<p class="links">
+<a href="http://mobil.bvg.de/Fahrinfo/bin/stboard.bin/dox?input=9120515&amp;boardType=dep&amp;time=22:29%2B1&amp;productsFilter=1111111111111111&amp;date=26.11.16&amp;maxJourneys=&amp;">Haltestelleninfo</a>
+<br>
+<br>
+<a href="http://mobil.bvg.de/Fahrinfo/bin/detect.bin/dox?">Fahrplanauskunft</a>
+<br>
+</p>
+<div id="ivu_footer">
+<a href="http://www.bvg.de/de/Serviceseiten/Impressum" title="Impressum" class="catlink">Impressum</a>
+</div>
+</div>
+
+
+</body></html>

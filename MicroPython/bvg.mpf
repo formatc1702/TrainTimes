@@ -1,0 +1,6 @@
+open tty.SLAB_USBtoUART
+put wificonfig.txt
+put boot.py
+put main.py
+ls
+repl
