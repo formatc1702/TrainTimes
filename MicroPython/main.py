@@ -145,9 +145,12 @@ for idx_station, station in enumerate(results):
     debug(displays[idx_station][0])
     for direction in station:
         n = len(direction)
-        # TODO: Remove connections that are in the past
+        # remove negative numbers
+        direction = [item for item in direction if item >= 0]
+        # remove items if there's more than N
         if n > 5:
             direction = direction[0:5]
+        # add dummy items (-999) if there's less than N
         if n < 5:
             for i in  range(n,5):
                 direction += [-999]
