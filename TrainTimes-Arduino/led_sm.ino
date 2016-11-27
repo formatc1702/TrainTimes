@@ -4,6 +4,7 @@ int num = 0;
 int curframe = 0;
 int nextframe = 0;
 int splitter = 1;
+int forcevar = 0;
 
 boolean scrolling = false;
 
@@ -16,9 +17,18 @@ void ExecLedSM() {
   EXEC(LedSM);
 }
 
+void ForceFirstFrame() {
+  curframe = 0;
+  forcevar = 1;
+  LedSM.Set(FrameStatic);
+  Serial.println("ForceFirstFrame");
+}
+
 State FrameStatic() {
   //  Serial.println("static start.");
+  Serial.println("FrameStatic");
   scrolling = false;
+  forcevar = 0;
   for (int i = 0; i < NUM_DISPLAYS; i++) {
     SetDisplayFrameFull(i, curframe);
   }
@@ -29,6 +39,10 @@ State FrameStatic() {
 
 State FrameIdle() {
   //  Serial.print(".");
+  if (forcevar == 1) {
+    Serial.println("Idle->Static");
+    LedSM.Set(FrameStatic);
+  }
   if ((
         curframe == 0 && LedSM.Timeout(FRAME_STOPDELAY_FIRST)) ||
       (curframe > 0 && LedSM.Timeout(FRAME_STOPDELAY_OTHERS)) ||
@@ -46,6 +60,10 @@ State FrameIdle() {
 
 State FrameScrolling() {
   //  Serial.println("scrolling start");
+  if (forcevar == 1) {
+    Serial.println("Scrolling->Static");
+    LedSM.Set(FrameStatic);
+  }
   for (int i = 0; i < NUM_DISPLAYS; i++) {
     SetDisplayFrameVerticalSplit(i, curframe, nextframe, splitter);
   }
@@ -56,6 +74,10 @@ State FrameScrolling() {
 
 State FrameScrollIdle() {
   //  Serial.print("/");
+  if (forcevar == 1) {
+    Serial.println("ScrollingIdle->Static");
+    LedSM.Set(FrameStatic);
+  }
   if (LedSM.Timeout(FRAME_SCROLLDELAY)) {
     splitter++;
     if (splitter == 8) {

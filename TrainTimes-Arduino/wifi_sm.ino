@@ -29,7 +29,7 @@ State WiFiFoundStartChar() {
     }
   }
   resetUpdateTime();
-  
+
   WiFiSM.Set(WiFiFoundEndChar);
 
   //  if(buf == '}') {
@@ -63,6 +63,7 @@ State WiFiFoundEndChar() {
 //  Serial.println();
 
 //  WiFiString = "";
-
+  calcRealDepartures();
+  ForceFirstFrame();
   WiFiSM.Set(WiFiIdle);
 }
