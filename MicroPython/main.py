@@ -2,11 +2,22 @@ import network
 import usocket as socket
 import ustruct as struct
 import utime   as time
-from machine import UART # connect D4 pin (TX) to RX line on the display
+from machine import UART, Pin # connect D4 pin (TX) to RX line on the display
 # import datetime
 # from datetime import datetime
 
 debug_mode = True
+
+led = Pin(2)
+led.init(Pin.OUT)
+led.high() # LED off
+
+def blink_on(times):
+    for i in range(0,times):
+        led.low()
+        time.sleep(0.1)
+        led.high()
+        time.sleep(0.1)
 
 def debug(*args,**kwargs):
     if debug_mode == True:
@@ -111,15 +122,18 @@ debug("SSID: \"", my_ap,"\"")
 debug("PWD:  \"", my_pw,"\"")
 wlan.connect(my_ap, my_pw)
 debug("Online!")
+blink_on(2)
 now = get_time()
 debug("Got current time!")
 debug(time.localtime(now))
 for sta_index, station in enumerate(displays):
+    led.high()
     url = "http://mobil.bvg.de/Fahrinfo/bin/stboard.bin/dox?input=" + station[0] + "&start=Suchen&boardType=depRT"
     # print(station[0])
     # print(url)
     directions = station[1:]
     http_get(url,sta_index,now)
+    led.low()
 
 wlan.disconnect()
 
@@ -143,3 +157,5 @@ for idx_station, station in enumerate(results):
 uart.write('}')
 uart.write('\n')
 uart.write('\n')
+time.sleep(0.5)
+blink_on(3)
