@@ -73,9 +73,9 @@ void InitDisplay() {
   //  matrix.write();
   //  delay(100);
   matrix.setIntensity(LED_INTENSITY);
-  matrix.fillScreen(1);
-  matrix.write();
-  delay(500);
+  // matrix.fillScreen(1);
+  // matrix.write();
+  // delay(500);
   matrix.fillScreen(0);
   matrix.write();
 }
@@ -189,4 +189,3 @@ void WriteAllDisplays() {
 }
 
 // */
-
