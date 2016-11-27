@@ -1,0 +1,5 @@
+open tty.SLAB_USBtoUART
+put bvg.py
+put wificonfig.txt
+ls
+repl

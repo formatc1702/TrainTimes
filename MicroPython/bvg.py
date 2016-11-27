@@ -5,6 +5,12 @@ import utime   as time
 # import datetime
 # from datetime import datetime
 
+debug_mode = False
+
+def debug(*args,**kwargs):
+    if debug_mode == True:
+        print(*args,**kwargs)
+
 displays = [
     ["Strassmannstr",
         ["Friedrich-Ludwig-Jahn-Sportpark", "S+U Hauptbahnhof"],
@@ -37,56 +43,57 @@ def get_time():
     val = struct.unpack("!I", msg[40:44])[0]
     return val - NTP_DELTA
 
-def http_get(url,sta_index,nnnow,dirs):
+def http_get(url,sta_index,nnnow):
     _, _, host, path = url.split('/', 3)
     addr = socket.getaddrinfo(host, 80)[0][-1]
     s = socket.socket()
     s.connect(addr)
-    print("Socket connected!")
-    s.send(bytes("GET /%s HTTP/1.0\\r\\nHost: %s\\r\\n\\r\\n" % (path, host), "utf8"))
+    debug("Socket connected!")
+    s.send(bytes("GET /%s HTTP/1.0\r\nHost: %s\r\n\r\n" % (path, host), "utf8"))
     while True:
         line = s.readline()
         if line:
             if "<tr class=\"ivu_table_" in line:
                 # extract relevant lines and clean them up
                 departure_full_line = s.readline()
-                print(departure_full_line)
+                # print(" ")
+                # print(departure_full_line)
                 departure_str = departure_full_line[12:17]
                 s.readline()
                 s.readline()
                 s.readline()
                 number_full_line = s.readline()
-                print(number_full_line)
-                if "<td>" in number_full_line:
-                    number_full_line = s.readline()
-                    print("->",number_full_line)
+                # print(number_full_line)
                 number_str = number_full_line[8:-10]
                 s.readline()
                 s.readline()
                 s.readline()
                 direction_full_line = s.readline()
-                print(direction_full_line)
+                # print(direction_full_line)
+                if "<td>" in direction_full_line:
+                    direction_full_line = s.readline()
+                    # print("->",direction_full_line)
                 # check if this train is actually relevant
                 # iterate through all directions tram can go at one station
-                for dir_index, direction in enumerate(dirs):
+                for dir_index, direction in enumerate(directions):
                      # iterate through all destinations in that direction
                     for destination_want in direction:
                          # is the tram going where we want it to?
                         if destination_want in direction_full_line:
-                            print(departure_str," : ",number_str," > ",direction_full_line)
+                            debug(departure_str," : ",number_str," > ",direction_full_line)
                             now_tuple = time.localtime(nnnow)
                             # print(now_tuple)
-                            departure = time.mktime((now_tuple[0
-                                                     now_tuple[1
-                                                     now_tuple[2
-                                                     int(departure_str[0:2]
-                                                     int(departure_str[3:5]
+                            departure = time.mktime((now_tuple[0],
+                                                     now_tuple[1],
+                                                     now_tuple[2],
+                                                     int(departure_str[0:2]),
+                                                     int(departure_str[3:5]),
                                                      0,0,0))
                             departure_tuple = time.localtime(departure)
-                            print(departure_tuple)
+                            debug(departure_tuple)
                             difference = departure - now
                             # TODO: Check if end of day/month/year
-                            print(difference)
+                            debug(difference)
                             # TODO: Remove connections that are inthe past
                             results[sta_index][dir_index] += [difference]
         else:
@@ -96,24 +103,36 @@ wifi_config = open("wificonfig.txt","r")
 my_ap = wifi_config.readline().rstrip()
 my_pw = wifi_config.readline().rstrip()
 wifi_config.close()
-print("Hello!")
+debug("Hello!")
 wlan = network.WLAN(network.STA_IF)
+wlan.active(True)
+debug("SSID: \"", my_ap,"\"")
+debug("PWD:  \"", my_pw,"\"")
 wlan.connect(my_ap, my_pw)
-print("Online!")
+debug("Online!")
 now = get_time()
-print("Got current time!")
-print(time.localtime(now))
+debug("Got current time!")
+debug(time.localtime(now))
 for sta_index, station in enumerate(displays):
-    url = "http://mobil.bvg.de/Fahrinfo/bin/stboard.bin/dox?input=" + station[0] + "&start=Suchen&boardType=depRT")
+    url = "http://mobil.bvg.de/Fahrinfo/bin/stboard.bin/dox?input=" + station[0] + "&start=Suchen&boardType=depRT"
     # print(station[0])
     # print(url)
     directions = station[1:]
-    http_get(url,sta_index,now,directions)
+    http_get(url,sta_index,now)
 
 # TODO: Add padding with -999 at the end
+print("{")
 for idx_station, station in enumerate(results):
-    print(displays[idx_station][0])
+    debug(displays[idx_station][0])
     for direction in station:
+        n = len(direction)
+        if n > 5:
+            direction = direction[0:5]
+        if n < 5:
+            for i in  range(n,5):
+                direction += [-999]
+        debug (len(direction))
         print (direction)
+print("}")
 
 wlan.disconnect()
