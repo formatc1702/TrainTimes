@@ -63,13 +63,21 @@ def http_get(url,sta_index,nnnow):\n
                 s.readline()\n
                 direction_full_line = s.readline()\n
                 # check if this train is actually relevant\n
-                for dir_index, direction in enumerate(directions): # iterate through all directions tram can go at one station\n
-                    for destination_want in direction: # iterate through all destinations in that direction\n
-                        if destination_want in direction_full_line: # is the tram going where we want it to?\n
-                            print(departure_str," : ",number_str," >",direction_full_line)\n
+                # iterate through all directions tram can go at one station\n
+                for dir_index, direction in enumerate(directions):\n
+                     # iterate through all destinations in that direction\n
+                    for destination_want in direction:\n
+                         # is the tram going where we want it to?\n
+                        if destination_want in direction_full_line:\n
+                            print(departure_str," : ",number_str," > ",direction_full_line)\n
                             now_tuple = time.localtime(nnnow)\n
                             # print(now_tuple)\n
-                            departure = time.mktime((now_tuple[0],now_tuple[1],now_tuple[2],int(departure_str[0:2]),int(departure_str[3:5]),0,0,0))\n
+                            departure = time.mktime((now_tuple[0],
+                                                     now_tuple[1],
+                                                     now_tuple[2],
+                                                     int(departure_str[0:2]),
+                                                     int(departure_str[3:5]),
+                                                     0,0,0))\n
                             departure_tuple = time.localtime(departure)\n
                             print(departure_tuple)\n
                             difference = departure - now\n
