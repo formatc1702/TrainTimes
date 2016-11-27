@@ -145,6 +145,7 @@ for idx_station, station in enumerate(results):
     debug(displays[idx_station][0])
     for direction in station:
         n = len(direction)
+        # TODO: Remove connections that are in the past
         if n > 5:
             direction = direction[0:5]
         if n < 5:
