@@ -1,9 +1,9 @@
 -- configuration
--- TODO remove SSID+KEY and put in a .gitignore'd file
-SSID = "<INSERT SSID HERE>"
-KEY  = "<INSERT WIFI KEY HERE>"
-HOST = "danielrojas.net"
-URL  = "http://danielrojas.net/iot/traintimes/bvg.php"
+-- TODO : point the following four lines to usersettings.lua
+-- SSID = "<INSERT SSID HERE>"
+-- KEY  = "<INSERT WIFI KEY HERE>"
+-- HOST = "danielrojas.net"
+-- URL  = "http://danielrojas.net/iot/traintimes/bvg.php"
 
 active = 0
 
