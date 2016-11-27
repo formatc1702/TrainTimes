@@ -23,8 +23,6 @@ displays = [\n
 \n
 results = [[[],[]],[[],[],[],[]],[[],[]]]\n
 \n
-\n
-\n
 def get_time():\n
     NTP_DELTA = 3155673600 - 1 * 60 * 60 # Adjust for CET\n
     host = "pool.ntp.org"\n
@@ -39,7 +37,7 @@ def get_time():\n
     val = struct.unpack("!I", msg[40:44])[0]\n
     return val - NTP_DELTA\n
 \n
-def http_get(url,sta_index,nnnow):\n
+def http_get(url,sta_index,nnnow,dirs):\n
     _, _, host, path = url.split('/', 3)\n
     addr = socket.getaddrinfo(host, 80)[0][-1]\n
     s = socket.socket()\n
@@ -52,19 +50,25 @@ def http_get(url,sta_index,nnnow):\n
             if "<tr class=\"ivu_table_" in line:\n
                 # extract relevant lines and clean them up\n
                 departure_full_line = s.readline()\n
+                print(departure_full_line)\n
                 departure_str = departure_full_line[12:17]\n
                 s.readline()\n
                 s.readline()\n
                 s.readline()\n
                 number_full_line = s.readline()\n
+                print(number_full_line)\n
+                if "<td>" in number_full_line:\n
+                    number_full_line = s.readline()\n
+                    print("->",number_full_line)\n
                 number_str = number_full_line[8:-10]\n
                 s.readline()\n
                 s.readline()\n
                 s.readline()\n
                 direction_full_line = s.readline()\n
+                print(direction_full_line)\n
                 # check if this train is actually relevant\n
                 # iterate through all directions tram can go at one station\n
-                for dir_index, direction in enumerate(directions):\n
+                for dir_index, direction in enumerate(dirs):\n
                      # iterate through all destinations in that direction\n
                     for destination_want in direction:\n
                          # is the tram going where we want it to?\n
@@ -83,7 +87,7 @@ def http_get(url,sta_index,nnnow):\n
                             difference = departure - now\n
                             # TODO: Check if end of day/month/year\n
                             print(difference)\n
-                            # TODO: Remove connections that are inthe past
+                            # TODO: Remove connections that are inthe past\n
                             results[sta_index][dir_index] += [difference]\n
         else:\n
             break\n
@@ -100,14 +104,16 @@ now = get_time()\n
 print("Got current time!")\n
 print(time.localtime(now))\n
 for sta_index, station in enumerate(displays):\n
-    url = "http://mobil.bvg.de/Fahrinfo/bin/stboard.bin/dox?input=" + station[0] + "&start=Suchen&boardType=depRT"\n
+    url = "http://mobil.bvg.de/Fahrinfo/bin/stboard.bin/dox?input=" + station[0] + "&start=Suchen&boardType=depRT")\n
     # print(station[0])\n
     # print(url)\n
     directions = station[1:]\n
-    http_get(url,sta_index,now)\n
+    http_get(url,sta_index,now,directions)\n
 \n
-# TODO: Add padding with -999 at the end
+# TODO: Add padding with -999 at the end\n
 for idx_station, station in enumerate(results):\n
     print(displays[idx_station][0])\n
     for direction in station:\n
         print (direction)\n
+\n
+wlan.disconnect()\n
