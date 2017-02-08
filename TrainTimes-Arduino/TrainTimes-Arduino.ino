@@ -27,6 +27,7 @@ void loop()
   ExecSwitchSM();
   ExecWifiSM();
   ExecTimerSM();
+  CheckSleep();
 //  Serial.print(":-)");
 }
 

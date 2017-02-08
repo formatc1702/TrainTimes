@@ -32,6 +32,7 @@ boolean DisplayColor[NUM_DISPLAYS] = {RED, GREEN};
 // INITIALIZATION ////////////////////////////////////////////////////////////
 
 void InitDisplay() {
+  matrix.shutdown(false); // turn on
   for (int i = 0; i < NUM_DISPLAYS; i++) {
     for (int r = 0; r < 8; r++) {
       OutputBuffer[i][r] = 0x00;
@@ -186,6 +187,10 @@ void WriteAllDisplays() {
   //    blinky = !blinky;
   //  Serial.print("took ");
   //  Serial.println(after - before, DEC);
+}
+
+void SleepDisplays() {
+  matrix.shutdown(true); // turn off
 }
 
 // */
