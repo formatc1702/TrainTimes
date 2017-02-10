@@ -110,15 +110,15 @@ void calcRealDepartures() {
           depshift[line]++;
         departures_real[line][dep] = disptime;
 
-        Serial.print(timediff);
-        Serial.print('\t');
+//        Serial.print(timediff);
+//        Serial.print('\t');
       } else {
         departures_real[line][dep] = -999;
       }
     }
-    Serial.println();
+//    Serial.println();
   }
-  Serial.println();
+//  Serial.println();
 }
 
 // */

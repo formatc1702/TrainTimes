@@ -171,7 +171,9 @@ void WriteDisplay(int DisplayNumber) {
       matrix.drawPixel(realrow, c, (OutputBuffer[DisplayNumber][r] << c & B10000000));
     }
   }
-  //  Serial.println();
+//  Serial.print("Writing display ");
+//  Serial.print(DisplayNumber);
+//  Serial.println();
   matrix.write();
 }
 
