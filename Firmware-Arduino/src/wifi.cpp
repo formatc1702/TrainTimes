@@ -4,6 +4,7 @@
 
 #include "config.h"
 #include "trains.h"
+#include "sleep.h"
 
 #define PIN_ESP_CHPD 3
 
@@ -29,19 +30,31 @@ void CheckWiFi() {
     Serial.print(".");
     char buf = wifi.read();
     if (buf == '{') {         // found start character
+      boolean valid = true;
       Serial.print("{");
       Serial.println();
       for (EACH_TRAINLINE) {
         for (EACH_DEPARTURE) {
           int newtime = wifi.parseInt();
+          if (newtime == 0) {
+            valid = false;
+            break;
+          }
           setTrainTime(line, dep, newtime);
           Serial.print(newtime);
           Serial.print("\t\t");
         }
         Serial.println();
+        if (valid == false)
+          break;
       }
-      EnableTrains();
-      Serial.print("}");
+      if (valid) {
+        EnableTrains();
+        ResetSleep();
+        Serial.print("} OK!");
+      } else {
+        Serial.print("ERROR");
+      }
       Serial.flush();
     }
   }

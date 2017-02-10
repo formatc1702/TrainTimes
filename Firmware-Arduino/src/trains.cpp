@@ -2,6 +2,7 @@
 #include <Arduino.h> // max()
 
 #include "config.h"
+#include "leds.h" // remove later!
 #define RECALC_TIMES_SECONDS 3
 
 int departures      [NUM_TRAINLINES][NUM_DEPARTURETIMES];
@@ -20,7 +21,7 @@ void InitTrains() {
     }
     depshift[line] = 0;
   }
-  calcRealDepartures();
+  // calcRealDepartures();
 }
 
 void setTrainTime(int trainLine, int departureNumber, int departureTime) {
@@ -29,7 +30,7 @@ void setTrainTime(int trainLine, int departureNumber, int departureTime) {
 
 void calcRealDepartures() {
   for   (EACH_TRAINLINE) {
-    depshift[line] = 0;
+    // depshift[line] = 0;
     for (EACH_DEPARTURE) {
       if (departures[line][dep] != -999) {
         int timediff = (departures[line][dep] - timeSinceUpdate);
@@ -38,19 +39,36 @@ void calcRealDepartures() {
         if (disptime == 0)
           depshift[line]++;
         departures_real[line][dep] = disptime;
-
-//        Serial.print(timediff);
-//        Serial.print('\t');
       } else {
         departures_real[line][dep] = -999;
       }
     }
-//    Serial.println();
   }
-//  Serial.println();
+  // Serial.print("Y");
+
+
+
+  for   (EACH_TRAINLINE) {
+    // for (int dep  = 0; dep  < NUM_DEPARTURETIMES - depshift[line]; dep++ ) {
+    for (EACH_DEPARTURE) {
+      int realdeptime = departures_real[line][dep]; // + depshift[line]];
+      if (realdeptime != -999) {
+        SetFrameValueInt (line, dep, realdeptime);
+      } else {
+        SetFrameIcon (line, dep, 2);
+      }
+    }
+    // for (int dep  = NUM_DEPARTURETIMES - depshift[line]; dep < NUM_DEPARTURETIMES; dep++ ) {
+    //   SetFrameIcon (line, dep, 1);
+    // }
+  }
+  // Serial.print("Z");
+  SetAllDisplaysFrameFull(0);
+  WriteAllDisplays();
 }
 
 void EnableTrains() {
+  calcRealDepartures();
   trainsready = 1;
 }
 

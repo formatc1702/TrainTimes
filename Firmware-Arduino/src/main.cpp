@@ -5,6 +5,7 @@
 #include "statemachines.h"
 #include "trains.h"
 #include "wifi.h"
+#include "sleep.h"
 
 
 void setup() {
@@ -12,9 +13,11 @@ void setup() {
   InitDisplay();
   InitTrains();
   InitWiFi();
+  ResetSleep();
 }
 
 void loop() {
   ExecStatemachines();
   CheckWiFi();
+  CheckSleep();
 }

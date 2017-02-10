@@ -30,8 +30,8 @@ int CurrentFrame  [NUM_DISPLAYS];
 
 // Setup
 void InitDisplay() {
-  matrix.shutdown(false); // turn on
-   for (EACH_DISPLAY) {
+  matrix.shutdown(true); // turn off (no flicker?)
+  for (EACH_DISPLAY) {
     for (EACH_ROW) {
       OutputBuffer[i][r] = 0x00;
       for (EACH_FRAME)
@@ -55,9 +55,13 @@ void InitDisplay() {
   // matrix.write();
   // delay(500);
   matrix.fillScreen(0);
+  matrix.shutdown(false); // turn on
   matrix.write();
 }
 
+void SleepDisplays() {
+  matrix.shutdown(true); // turn off
+}
 // Actual output to IC
 void WriteDisplay(int DisplayNumber) {
   for (EACH_ROW) for (EACH_COL) {
@@ -70,6 +74,7 @@ void WriteDisplay(int DisplayNumber) {
 void WriteAllDisplays() {
   for (EACH_DISPLAY)
     WriteDisplay(i);
+  // Serial.println("WA");
 }
 
 // Frames and stuff

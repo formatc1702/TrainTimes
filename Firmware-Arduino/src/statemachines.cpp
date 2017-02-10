@@ -5,7 +5,7 @@
 
 SM LedSM   (FrameLoadingHead, FrameLoadingBody);
 
-boolean scrolling = false;
+// boolean scrolling = false;
 
 int curframe = 0;
 int nextframe = 0;
@@ -22,18 +22,21 @@ void SetDisplayLoading() {
 }
 
 State FrameLoadingHead() {
-  AnimateLoading();
+  if(TrainsReady() == 0)
+    AnimateLoading();
 }
 State FrameLoadingBody() {
-  if(TrainsReady() == 1)
+  if(TrainsReady() == 1) {
+    // Serial.println("AAA");
     LedSM.Set(FrameStaticHead, FrameStaticBody);
+  }
   if(LedSM.Timeout(FRAME_SCROLLDELAY))
     LedSM.Set(FrameLoadingHead, FrameLoadingBody);
 }
 
 // Number scrolling animation /////////////////////////////////
 State FrameStaticHead() {
-  scrolling = false;
+  // scrolling = false;
   // forcevar = 0;
   SetAllDisplaysFrameFull(curframe);
   WriteAllDisplays();
@@ -50,7 +53,7 @@ State FrameStaticBody() {
     nextframe = curframe + 1;
     if (nextframe >= NUM_DEPARTURETIMES + 1) // +1 because of extra empty frame between last and first dep.time
       nextframe = 0;
-    scrolling = true;
+    // scrolling = true;
     LedSM.Set(FrameScrollingHead, FrameScrollingBody);
   }
 }
