@@ -3,9 +3,17 @@
 
 #include "SM.h"
 
-void  ExecLedSM();
+void ExecStatemachines();
 
+// Loading screen animation
+void  SetDisplayLoading();
 State FrameLoadingHead();
 State FrameLoadingBody();
+
+// Number scrolling animation
+State FrameStaticHead();
+State FrameStaticBody();
+State FrameScrollingHead();
+State FrameScrollingBody();
 
 #endif

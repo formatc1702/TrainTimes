@@ -1,3 +1,4 @@
+#include "leds.h"
 #include <SPI.h>
 #include "Adafruit_GFX.h"
 #include "Max72xxPanel.h"
@@ -11,9 +12,6 @@
 #define PIN_LOAD A2
 
 #define LED_INTENSITY 7
-
-#define NUM_DISPLAYS NUM_TRAINLINES
-#define NUM_FRAMES   NUM_DEPARTURETIMES + 1 // one blank frame
 
 #define FRAME_CUSTOM 32767
 
@@ -87,10 +85,20 @@ void SetFrameLoading(int DisplayNumber, int FrameNumber, int Value) {
     FrameBuffer[DisplayNumber][FrameNumber][r] = loading_sine[Value][r];
 }
 
+void SetAllDisplaysFrameFull(int FrameNumber) {
+  for (EACH_DISPLAY)
+    SetDisplayFrameFull (i, FrameNumber);
+}
+
 void SetDisplayFrameFull(int DisplayNumber, int FrameNumber) {
   CurrentFrame[DisplayNumber] = FrameNumber;
   for (EACH_ROW)
     OutputBuffer[DisplayNumber][r] = FrameBuffer[DisplayNumber][FrameNumber][r];
+}
+
+void SetAllDisplaysVerticalSplit (int FrameNumber1, int FrameNumber2, int Split) {
+  for (EACH_DISPLAY)
+    SetDisplayFrameVerticalSplit (i, FrameNumber1, FrameNumber2, Split);
 }
 
 void SetDisplayFrameVerticalSplit(int DisplayNumber, int FrameNumber1, int FrameNumber2, int Split) {
@@ -103,6 +111,11 @@ void SetDisplayFrameVerticalSplit(int DisplayNumber, int FrameNumber1, int Frame
     OutputBuffer[DisplayNumber][r] = FrameBuffer[DisplayNumber][FrameNumber2][r - (8 - Split)];
     // OutputBuffer[DisplayNumber][r] = FrameBuffer[DisplayNumber][FrameNumber2+(8-Split)][r];
   }
+}
+
+void SetAllDisplaysHorizontalSplit (int FrameNumber1, int FrameNumber2, int Split) {
+  for (EACH_DISPLAY)
+    SetDisplayFrameHorizontalSplit (i, FrameNumber1, FrameNumber2, Split);
 }
 
 void SetDisplayFrameHorizontalSplit(int DisplayNumber, int FrameNumber1, int FrameNumber2, int Split) {
