@@ -4,13 +4,13 @@
 #include "config.h"
 #define RECALC_TIMES_SECONDS 3
 
-#define EACH_TRAINLINE int line = 0; line < NUM_TRAINLINES;     line++
-#define EACH_DEPARTURE int dep  = 0; dep  < NUM_DEPARTURETIMES; dep++
 int departures      [NUM_TRAINLINES][NUM_DEPARTURETIMES];
 int departures_real [NUM_TRAINLINES][NUM_DEPARTURETIMES];
 int depshift        [NUM_TRAINLINES];
 
 int timeSinceUpdate = 0;
+
+int trainsready = 0;
 
 
 void InitTrains() {
@@ -21,6 +21,10 @@ void InitTrains() {
     depshift[line] = 0;
   }
   calcRealDepartures();
+}
+
+void setTrainTime(int trainLine, int departureNumber, int departureTime) {
+  departures[trainLine][departureNumber] = departureTime;
 }
 
 void calcRealDepartures() {
@@ -46,6 +50,10 @@ void calcRealDepartures() {
 //  Serial.println();
 }
 
+void EnableTrains() {
+  trainsready = 1;
+}
+
 int TrainsReady() {
-  return 0;
+  return trainsready;
 }

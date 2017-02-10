@@ -11,7 +11,7 @@
 #define PIN_CLK  A4
 #define PIN_LOAD A2
 
-#define LED_INTENSITY 7
+#define LED_INTENSITY 3
 
 #define FRAME_CUSTOM 32767
 
@@ -60,11 +60,9 @@ void InitDisplay() {
 
 // Actual output to IC
 void WriteDisplay(int DisplayNumber) {
-  for (EACH_ROW) {
-    for (EACH_COL) {
-      int realrow = r + 8 * DisplayNumber;
-      matrix.drawPixel(realrow, c, (OutputBuffer[DisplayNumber][r] << c & B10000000));
-    }
+  for (EACH_ROW) for (EACH_COL) {
+    int realrow = r + 8 * DisplayNumber;
+    matrix.drawPixel(realrow, c, (OutputBuffer[DisplayNumber][r] << c & B10000000));
   }
   matrix.write();
 }
