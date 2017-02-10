@@ -22,7 +22,10 @@ void ExecLedSM() {
 void ForceFirstFrame() {
   curframe = 0;
   forcevar = 1;
-  LedSM.Set(FrameStatic);
+  for (int i = 0; i < NUM_DISPLAYS; i++) {
+    SetDisplayFrameFull(i, 0);
+  }
+  LedSM.Set(FrameScrolling);
   Serial.println("ForceFirstFrame");
 }
 

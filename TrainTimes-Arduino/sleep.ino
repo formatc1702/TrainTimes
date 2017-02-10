@@ -1,6 +1,6 @@
 #include "LowPower.h"
 
-#define SLEEP_DELAY 20000
+#define SLEEP_DELAY 60000
 
 void CheckSleep() {
   if (millis() > SLEEP_DELAY)
