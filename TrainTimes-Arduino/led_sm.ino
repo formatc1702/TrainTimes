@@ -1,10 +1,12 @@
-SM LedSM   (FrameStatic );
+SM LedSM   (FrameLoadingHead, FrameLoadingBody );
 
 int num = 0;
 int curframe = 0;
 int nextframe = 0;
 int splitter = 1;
 int forcevar = 0;
+
+int iconcounter = 0;
 
 boolean scrolling = false;
 
@@ -22,6 +24,23 @@ void ForceFirstFrame() {
   forcevar = 1;
   LedSM.Set(FrameStatic);
   Serial.println("ForceFirstFrame");
+}
+
+State FrameLoadingHead() {
+  for (int i = 0; i < NUM_DISPLAYS; i++) {
+    SetFrameIcon(i, 0, 7 + iconcounter);
+    SetDisplayFrameFull(i, 0);
+  }
+  matrix.drawPixel(0, 4, 0);
+  WriteAllDisplays();
+}
+
+State FrameLoadingBody() {
+  if(LedSM.Timeout(FRAME_SCROLLDELAY)) {
+    if (++iconcounter == 20)
+      iconcounter = 0;
+    LedSM.Set(FrameLoadingHead, FrameLoadingBody);  
+  }
 }
 
 State FrameStatic() {
