@@ -23,18 +23,19 @@ def debug(*args,**kwargs):
     if debug_mode == True:
         print(*args,**kwargs)
 
+# displays = [station_name, walktime_min, [direction_1], [direction_n]]
 displays = [
-    ["Strassmannstr",
+    ["Strassmannstr", 2,
         ["Friedrich-Ludwig-Jahn-Sportpark", "S+U Hauptbahnhof"],
         ["S+U Warschauer Str."]]
     ,
-    ["S+Landsberger+Allee+%28Berlin%29",
+    ["S+Landsberger+Allee+%28Berlin%29", 8,
         ["Ringbahn S 42"],
         ["Ringbahn S 41"],
         ["S Blankenburg (Berlin)","S+U Pankow (Berlin)","S Birkenwerder Bhf"],
         ["S Flughafen Berlin-Sch&#246;nefeld Bhf","Sch&#246;neweide","S Gr&#252;nau (Berlin)"]]
     ,
-    ["Bersarinplatz",
+    ["Bersarinplatz", 6,
         ["Lichtenberg"],
         ["Sch&#246;neweide"]]
     ]
@@ -105,12 +106,12 @@ def http_get(url,sta_index,nnnow):
                             debug(departure_tuple)
                             difference = departure - now
                             # TODO: Check if end of day/month/year
-                            if   difference >= 60:
+                            if   difference >= walktime * 60: # OK!
                                 results[sta_index][dir_index] += [difference]
                                 debug(difference)
                             elif difference <= 0: # avoid sending a 0 (breaks the ParseInt function on Arduino side)
                                 debug(difference, "<60")
-                            else:
+                            else: # connection is in the past
                                 debug(difference, "<=0")
         else:
             break
@@ -141,7 +142,8 @@ for i in range(0,40): # attempt to connect
             url = "http://mobil.bvg.de/Fahrinfo/bin/stboard.bin/dox?input=" + station[0] + "&start=Suchen&boardType=depRT"
             # print(station[0])
             # print(url)
-            directions = station[1:]
+            walktime   = station[1]
+            directions = station[2:]
             http_get(url,sta_index,now)
             led.low()
 
