@@ -8,8 +8,8 @@
 
 #define PIN_ESP_CHPD 3
 
-// SoftwareSerial wifi(4,2);
-#define wifi Serial  // DEBUG ONLY!!!
+SoftwareSerial wifi(4,2);
+// #define wifi Serial  // DEBUG ONLY!!!
 
 //String WiFiString;
 

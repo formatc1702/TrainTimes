@@ -6,7 +6,7 @@ from machine import UART, Pin # connect D4 pin (TX) to RX line on the display
 # import datetime
 # from datetime import datetime
 
-debug_mode = True
+debug_mode = False
 
 led = Pin(2)
 led.init(Pin.OUT)
@@ -15,9 +15,9 @@ led.high() # LED off
 def blink_on(times):
     for i in range(0,times):
         led.low()
-        time.sleep(0.1)
+        time.sleep(0.25)
         led.high()
-        time.sleep(0.1)
+        time.sleep(0.25)
 
 def debug(*args,**kwargs):
     if debug_mode == True:
@@ -147,7 +147,8 @@ for i in range(0,40): # attempt to connect
 
         wlan.disconnect()
 
-uart = UART(1,9600)
+        uart = UART(1,9600) # TX: GPIO2=D4, RX: none? (GPIO is also LED!)
+        # uart = UART(2,9600) # TX: GPIO15=D8, RX: GPIO13=D7, not implemented?
 
         uart.write('{')
         uart.write('\n')
