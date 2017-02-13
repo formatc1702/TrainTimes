@@ -122,44 +122,57 @@ wifi_config.close()
 debug("Hello!")
 wlan = network.WLAN(network.STA_IF)
 wlan.active(True)
-debug("SSID: \"", my_ap,"\"")
-debug("PWD:  \"", my_pw,"\"")
-wlan.connect(my_ap, my_pw)
-debug("Online!")
-blink_on(2)
-now = get_time()
-debug("Got current time!")
-debug(time.localtime(now))
-for sta_index, station in enumerate(displays):
-    led.high()
-    url = "http://mobil.bvg.de/Fahrinfo/bin/stboard.bin/dox?input=" + station[0] + "&start=Suchen&boardType=depRT"
-    # print(station[0])
-    # print(url)
-    directions = station[1:]
-    http_get(url,sta_index,now)
-    led.low()
+debug("SSID: ", my_ap)
+debug("PWD:  ", my_pw)
 
-wlan.disconnect()
+wlan.connect(my_ap, my_pw)
+for i in range(0,40): # attempt to connect
+    ip,mask,gateway,dns = wlan.ifconfig()
+    if ip == "0.0.0.0": #not connected
+        debug(".")
+        time.sleep(1)
+    else: #connected!
+        debug("Got IP: ", ip)
+        blink_on(2)
+        now = get_time()
+        debug("Got current time: ", time.localtime(now))
+        for sta_index, station in enumerate(displays):
+            led.high()
+            url = "http://mobil.bvg.de/Fahrinfo/bin/stboard.bin/dox?input=" + station[0] + "&start=Suchen&boardType=depRT"
+            # print(station[0])
+            # print(url)
+            directions = station[1:]
+            http_get(url,sta_index,now)
+            led.low()
+
+        wlan.disconnect()
 
 uart = UART(1,9600)
 
-uart.write('{')
-uart.write('\n')
-for idx_station, station in enumerate(results):
-    debug(displays[idx_station][0])
-    for direction in station:
-        n = len(direction)
-        if n > 5:
-            direction = direction[0:5]
-        if n < 5:
-            for i in  range(n,5):
-                direction += [-999]
-        debug (direction)
-        debug (len(direction))
-        uart.write(str(direction))
+        uart.write('{')
         uart.write('\n')
-uart.write('}')
-uart.write('\n')
-uart.write('\n')
-time.sleep(0.5)
-blink_on(3)
+        for idx_station, station in enumerate(results):
+            debug(displays[idx_station][0])
+            for direction in station:
+                n = len(direction)
+                if n > 5:
+                    direction = direction[0:5]
+                if n < 5:
+                    for i in  range(n,5):
+                        direction += [-999]
+                debug (direction)
+                debug (len(direction))
+                uart.write(str(direction))
+                uart.write('\n')
+        uart.write('}')
+        uart.write('\n')
+        uart.write('\n')
+        time.sleep(1)
+        led.init(Pin.OUT)
+        led.low()
+        time.sleep(2)
+        led.high()
+        debug("Finished!")
+        break
+else:
+    print("Could not connect to WiFi")
