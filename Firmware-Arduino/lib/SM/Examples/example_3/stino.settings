@@ -1,0 +1,13 @@
+{
+    "arduino_folder": "/Applications/Arduino.app", 
+    "board": 2, 
+    "build_folder": "/Users/daniel/Documents/Development/Arduino/_Build", 
+    "full_compilation": true, 
+    "platform": 4, 
+    "platform_name": "Arduino AVR Boards", 
+    "programmer": {
+        "1": 5
+    }, 
+    "serial_port": 0, 
+    "set_bare_gcc_only": false
+}

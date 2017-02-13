@@ -6,7 +6,7 @@ from machine import UART, Pin # connect D4 pin (TX) to RX line on the display
 # import datetime
 # from datetime import datetime
 
-debug_mode = True
+debug_mode = False
 
 led = Pin(2)
 led.init(Pin.OUT)
@@ -15,9 +15,9 @@ led.high() # LED off
 def blink_on(times):
     for i in range(0,times):
         led.low()
-        time.sleep(0.1)
+        time.sleep(0.25)
         led.high()
-        time.sleep(0.1)
+        time.sleep(0.25)
 
 def debug(*args,**kwargs):
     if debug_mode == True:
@@ -105,9 +105,13 @@ def http_get(url,sta_index,nnnow):
                             debug(departure_tuple)
                             difference = departure - now
                             # TODO: Check if end of day/month/year
-                            debug(difference)
-                            # TODO: Remove connections that are inthe past
-                            results[sta_index][dir_index] += [difference]
+                            if   difference >= 60:
+                                results[sta_index][dir_index] += [difference]
+                                debug(difference)
+                            elif difference <= 0: # avoid sending a 0 (breaks the ParseInt function on Arduino side)
+                                debug(difference, "<60")
+                            else:
+                                debug(difference, "<=0")
         else:
             break
 
@@ -118,48 +122,58 @@ wifi_config.close()
 debug("Hello!")
 wlan = network.WLAN(network.STA_IF)
 wlan.active(True)
-debug("SSID: \"", my_ap,"\"")
-debug("PWD:  \"", my_pw,"\"")
+debug("SSID: ", my_ap)
+debug("PWD:  ", my_pw)
+
 wlan.connect(my_ap, my_pw)
-debug("Online!")
-blink_on(2)
-now = get_time()
-debug("Got current time!")
-debug(time.localtime(now))
-for sta_index, station in enumerate(displays):
-    led.high()
-    url = "http://mobil.bvg.de/Fahrinfo/bin/stboard.bin/dox?input=" + station[0] + "&start=Suchen&boardType=depRT"
-    # print(station[0])
-    # print(url)
-    directions = station[1:]
-    http_get(url,sta_index,now)
-    led.low()
+for i in range(0,40): # attempt to connect
+    ip,mask,gateway,dns = wlan.ifconfig()
+    if ip == "0.0.0.0": #not connected
+        debug(".")
+        time.sleep(1)
+    else: #connected!
+        debug("Got IP: ", ip)
+        blink_on(2)
+        now = get_time()
+        debug("Got current time: ", time.localtime(now))
+        for sta_index, station in enumerate(displays):
+            led.high()
+            url = "http://mobil.bvg.de/Fahrinfo/bin/stboard.bin/dox?input=" + station[0] + "&start=Suchen&boardType=depRT"
+            # print(station[0])
+            # print(url)
+            directions = station[1:]
+            http_get(url,sta_index,now)
+            led.low()
 
-wlan.disconnect()
+        wlan.disconnect()
 
-uart = UART(1,9600)
+        uart = UART(1,9600) # TX: GPIO2=D4, RX: none? (GPIO is also LED!)
+        # uart = UART(2,9600) # TX: GPIO15=D8, RX: GPIO13=D7, not implemented?
 
-uart.write('{')
-uart.write('\n')
-for idx_station, station in enumerate(results):
-    debug(displays[idx_station][0])
-    for direction in station:
-        n = len(direction)
-        # remove negative numbers
-        direction = [item for item in direction if item >= 0]
-        # remove items if there's more than N
-        if n > 5:
-            direction = direction[0:5]
-        # add dummy items (-999) if there's less than N
-        if n < 5:
-            for i in  range(n,5):
-                direction += [-999]
-        debug (direction)
-        debug (len(direction))
-        uart.write(str(direction))
+        uart.write('{')
         uart.write('\n')
-uart.write('}')
-uart.write('\n')
-uart.write('\n')
-time.sleep(0.5)
-blink_on(3)
+        for idx_station, station in enumerate(results):
+            debug(displays[idx_station][0])
+            for direction in station:
+                n = len(direction)
+                if n > 5:
+                    direction = direction[0:5]
+                if n < 5:
+                    for i in  range(n,5):
+                        direction += [-999]
+                debug (direction)
+                debug (len(direction))
+                uart.write(str(direction))
+                uart.write('\n')
+        uart.write('}')
+        uart.write('\n')
+        uart.write('\n')
+        time.sleep(1)
+        led.init(Pin.OUT)
+        led.low()
+        time.sleep(2)
+        led.high()
+        debug("Finished!")
+        break
+else:
+    print("Could not connect to WiFi")

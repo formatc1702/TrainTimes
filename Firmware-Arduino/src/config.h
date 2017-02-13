@@ -1,0 +1,14 @@
+#ifndef __CONFIG_H
+#define __CONFIG_H
+
+#define NUM_TRAINLINES 8
+#define NUM_DEPARTURETIMES 5
+
+#define NUM_DISPLAYS NUM_TRAINLINES
+#define NUM_FRAMES   NUM_DEPARTURETIMES + 1 // one blank frame
+
+#define FRAME_SCROLLDELAY       50
+#define FRAME_STOPDELAY_FIRST 8000
+#define FRAME_STOPDELAY_OTHERS 500
+
+#endif
