@@ -105,9 +105,13 @@ def http_get(url,sta_index,nnnow):
                             debug(departure_tuple)
                             difference = departure - now
                             # TODO: Check if end of day/month/year
-                            debug(difference)
-                            # TODO: Remove connections that are inthe past
-                            results[sta_index][dir_index] += [difference]
+                            if   difference >= 60:
+                                results[sta_index][dir_index] += [difference]
+                                debug(difference)
+                            elif difference <= 0: # avoid sending a 0 (breaks the ParseInt function on Arduino side)
+                                debug(difference, "<60")
+                            else:
+                                debug(difference, "<=0")
         else:
             break
 
