@@ -3,6 +3,7 @@ import usocket as socket
 import ustruct as struct
 import utime   as time
 from machine import UART, Pin # connect D4 pin (TX) to RX line on the display
+import esp
 # import datetime
 # from datetime import datetime
 
@@ -188,4 +189,9 @@ for i in range(0,40): # attempt to connect
         wlan.disconnect()
         break
 else:
-    print("Could not connect to WiFi")
+    debug("ERROR: Could not connect to WiFi")
+
+debug("Turn off WiFi")
+wlan.active(False)
+debug("Set to deep sleep... good night!")
+esp.deepsleep()
