@@ -22,7 +22,7 @@ void InitWiFi() {
   pinMode     (PIN_ESP_CHPD, INPUT);
 
   wifi.begin(9600);
-  wifi.setTimeout(100);
+  wifi.setTimeout(1000);
 }
 
 void CheckWiFi() {
@@ -51,8 +51,10 @@ void CheckWiFi() {
       if (valid) {
         EnableTrains();
         ResetSleep();
+        // TODO: Send ACK
         Serial.print("} OK!");
       } else {
+        // TODO: Send ERR
         Serial.print("ERROR");
       }
       Serial.flush();

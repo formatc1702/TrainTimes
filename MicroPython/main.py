@@ -152,30 +152,40 @@ for i in range(0,40): # attempt to connect
         uart = UART(1,9600) # TX: GPIO2=D4, RX: none? (GPIO is also LED!)
         # uart = UART(2,9600) # TX: GPIO15=D8, RX: GPIO13=D7, not implemented?
 
-        uart.write('{')
-        uart.write('\n')
-        for idx_station, station in enumerate(results):
-            debug(displays[idx_station][0])
-            for direction in station:
-                n = len(direction)
-                if n > 5:
-                    direction = direction[0:5]
-                if n < 5:
-                    for i in  range(n,5):
-                        direction += [-999]
-                debug (direction)
-                debug (len(direction))
-                uart.write(str(direction))
-                uart.write('\n')
-        uart.write('}')
-        uart.write('\n')
-        uart.write('\n')
-        time.sleep(1)
-        led.init(Pin.OUT)
-        led.low()
-        time.sleep(2)
-        led.high()
-        debug("Finished!")
+        for i in range(0,5): # send results to Arduino until ACK is received
+            uart.write('{')
+            uart.write('\n')
+            for idx_station, station in enumerate(results):
+                # debug(displays[idx_station][0])
+                for direction in station:
+                    n = len(direction)
+                    if n > 5:
+                        direction = direction[0:5]
+                    if n < 5:
+                        for i in  range(n,5):
+                            direction += [-999]
+                    debug (direction)
+                    uart.write(str(direction))
+                    uart.write('\n')
+                    time.sleep_ms(50)
+            uart.write('}')
+            uart.write('\n')
+            uart.write('\n')
+
+            # TODO: read ACK/ERR from Arduino
+
+            if (True): # TODO: Actually check ACK/ERR
+                time.sleep(0.1)
+                debug("SUCCESS")
+                led.init(Pin.OUT) # led pin is UART tx, reclaim it here
+                led.low()
+                time.sleep(2)
+                led.high()
+                break
+        else:
+            debug("ERROR: Could not get ACK")
+        debug("Discronnect from WiFi")
+        wlan.disconnect()
         break
 else:
     print("Could not connect to WiFi")
