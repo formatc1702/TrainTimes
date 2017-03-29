@@ -33,8 +33,8 @@ displays = [
     ["S+Landsberger+Allee+%28Berlin%29", 8,
         ["Ringbahn S 42"],
         ["Ringbahn S 41"],
-        ["S Blankenburg (Berlin)","S+U Pankow (Berlin)","S Birkenwerder Bhf"],
-        ["S Flughafen Berlin-Sch&#246;nefeld Bhf","Sch&#246;neweide","S Gr&#252;nau (Berlin)"]]
+        ["Blankenburg", "Pankow ", "Birkenwerder", "Waidmannslust", "Henningsdorf", "Bernau"],
+        ["S Flughafen Berlin-Sch&#246;nefeld Bhf", "Sch&#246;neweide", "Gr&#252;nau", "Zeuthen", "Spindlersfeld", "Wusterhausen"]]
     ,
     ["Bersarinplatz", 6,
         ["Lichtenberg"],
