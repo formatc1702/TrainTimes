@@ -44,7 +44,8 @@ displays = [
 results = [[[],[]],[[],[],[],[]],[[],[]]]
 
 def get_time():
-    NTP_DELTA = 3155673600 - 1 * 60 * 60 # Adjust for CET
+    #NTP_DELTA = 3155673600 - 1 * 60 * 60 # Adjust for CET
+    NTP_DELTA = 3155673600 - 2 * 60 * 60 # Adjust for CEST... TODO: Make timezones smarter
     host = "pool.ntp.org"
     NTP_QUERY = bytearray(48)
     NTP_QUERY[0] = 0x1b
