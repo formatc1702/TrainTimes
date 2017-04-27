@@ -12,15 +12,19 @@ class API:
 
         self.tail = "format=json&accessId={}".format(self.api_key)
 
+        self.metasocket = http.MetaSocket(self.base_url)
+
     def get_station_id(self, station_name):
-        src = http.get("{}/location.name?input={}&{}".format(self.base_url, station_name, self.tail))
+        src = self.metasocket.get("{}/location.name?input={}&{}".format(self.base_url, station_name, self.tail))
         while True:
-            line = src.readline().decode("utf-8")
+            line = self.metasocket.s.readline().decode("utf-8")
             if line:
                 if line[0] == "{":
                     j = json.loads(line)
+                    self.metasocket.s.close()
                     return j["stopLocationOrCoordLocation"][0]["StopLocation"]["extId"]
             else:
+                self.metasocket.s.close()
                 break
 
     def get_departures(self, station_id, max_journeys=0, direction_id=""):
@@ -32,9 +36,9 @@ class API:
             p_dir = "&direction={}".format(direction_id)
         else:
             p_dir = ""
-        src = http.get("{}/departureBoard?extId={}{}{}&{}".format(self.base_url, station_id, p_dir, p_journeys, self.tail))
+        src = self.metasocket.get("{}/departureBoard?extId={}{}{}&{}".format(self.base_url, station_id, p_dir, p_journeys, self.tail))
         while True:
-            line = src.readline().decode("utf-8")
+            line = self.metasocket.s.readline().decode("utf-8")
             if line:
                 if line[0] == "{":
                     j = json.loads(line)

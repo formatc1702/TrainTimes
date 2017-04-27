@@ -1,9 +1,12 @@
 import usocket as socket
 
-def get(url): # returns socket
-    _, _, host, path = url.split('/', 3)
-    addr = socket.getaddrinfo(host, 80)[0][-1]
-    s = socket.socket()
-    s.connect(addr)
-    s.send(bytes('GET /%s HTTP/1.0\r\nHost: %s\r\n\r\n' % (path, host), 'utf8'))
-    return s
+class MetaSocket:
+    def __init__(self, url):
+        _, _, self.host, _ = url.split('/', 3)
+        self.s = socket.socket()
+
+    def get(self, url): # returns socket
+        _, _, _, path = url.split('/', 3)
+        self.addr = socket.getaddrinfo(self.host, 80)[0][-1]
+        self.s.connect(self.addr)
+        self.s.send(bytes('GET /{} HTTP/1.0\r\nHost: {}\r\n\r\n'.format(path, self.host), 'utf8'))
