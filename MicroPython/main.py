@@ -1,41 +1,20 @@
 import gc
 
-print(gc.mem_free())
-
-
 import wifi
-print(gc.mem_free())
-import http
 print(gc.mem_free())
 import vbbapi
 
-print(gc.mem_free())
-
 w = wifi.WiFi()
-print(gc.mem_free())
 a = vbbapi.API()
-
-print(gc.mem_free())
-gc.collect()
-print(gc.mem_free())
-
-sid     = a.get_station_id("Strassmannstr")
+sid     = a.get_station_id("Strassmannstr", True)
 print("SID",sid)
-print(gc.mem_free())
-dirid_n = a.get_station_id("Eberswalder")
+dirid_n = a.get_station_id("Eberswalder", True)
 print("DIRN",dirid_n)
-print(gc.mem_free())
-dirid_s = a.get_station_id("Bersarinplatz")
+dirid_s = a.get_station_id("Bersarinplatz", True)
 print("DIRS",dirid_s)
-print(gc.mem_free())
 
+n_d, n_t = a.get_departures(sid, 5, dirid_n)
+print(n_d, n_t)
 
-print(gc.mem_free())
-
-dep_n = a.get_departures(sid, 5, dirid_n)
-dep_s = a.get_departures(sid, 5, dirid_s)
-
-print(dep_n)
-print(dep_s)
-
-print(gc.mem_free())
+s_d, s_t = a.get_departures(sid, 5, dirid_s)
+print(s_d, s_t)

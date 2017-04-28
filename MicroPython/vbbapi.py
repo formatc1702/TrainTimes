@@ -1,10 +1,8 @@
-import usocket as socket
-import http
-import ujson as json
+import urequests
 
 class API:
     def __init__(self):
-        self.base_url = "http://demo.hafas.de/openapi/vbb-proxy"
+        self.base_url = "http://demo.hafas.de/openapi/vbb-proxy/"
 
         f = open("apikey.txt","r")
         self.api_key =  f.readline().rstrip()
@@ -12,22 +10,16 @@ class API:
 
         self.tail = "format=json&accessId={}".format(self.api_key)
 
-        self.metasocket = http.MetaSocket(self.base_url)
+    def create_request(self, command):
+        return "{}{}&{}".format(self.base_url, command, self.tail)
 
-    def get_station_id(self, station_name):
-        src = self.metasocket.get("{}/location.name?input={}&{}".format(self.base_url, station_name, self.tail))
-        while True:
-            line = self.metasocket.s.readline().decode("utf-8")
-            if line:
-                if line[0] == "{":
-                    j = json.loads(line)
-                    self.metasocket.s.close()
-                    return j["stopLocationOrCoordLocation"][0]["StopLocation"]["extId"]
-            else:
-                self.metasocket.s.close()
-                break
+    def get_station_id(self, station_name, verbose=False):
+        r = self.create_request("location.name?input={}".format(station_name))
+        print(r)
+        j = urequests.get(r).json()
+        return j["stopLocationOrCoordLocation"][0]["StopLocation"]["extId"]
 
-    def get_departures(self, station_id, max_journeys=0, direction_id=""):
+    def get_departures(self, station_id, max_journeys=0, direction_id="", verbose=False):
         if max_journeys > 0:
             p_journeys = "&maxJourneys={}".format(max_journeys)
         else:
@@ -36,12 +28,20 @@ class API:
             p_dir = "&direction={}".format(direction_id)
         else:
             p_dir = ""
-        src = self.metasocket.get("{}/departureBoard?extId={}{}{}&{}".format(self.base_url, station_id, p_dir, p_journeys, self.tail))
-        while True:
-            line = self.metasocket.s.readline().decode("utf-8")
-            if line:
-                if line[0] == "{":
-                    j = json.loads(line)
-                    return j
+
+        r = self.create_request("departureBoard?extId={}{}{}".format(station_id, p_dir, p_journeys))
+        print(r)
+        j = urequests.get(r).json()
+        
+        dates = []
+        times = []
+        for departure in j["Departure"]:
+            if "rtTime" in departure:
+                dates.append(departure["rtDate"])
+                times.append(departure["rtTime"])
+                print("REAL TIME")
             else:
-                break
+                dates.append(departure["date"])
+                times.append(departure["time"])
+                print ("NOT!!!")
+        return dates, times
