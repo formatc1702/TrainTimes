@@ -46,11 +46,11 @@ with open("stationids.txt","r") as f:
 # get missing IDs from API
 for origin, direction in reqs:
     if not origin in station_ids:
-        station_ids[origin] = a.get_station_id(origin)
-        print("Got ID for {}: {}".format(origin, station_ids[origin]))
+        station_ids[origin]    = a.get_station_id(origin)
+        print("New ID {} is {}".format(station_ids[origin],    origin))
     if not direction in station_ids:
         station_ids[direction] = a.get_station_id(direction)
-        print("Got ID for {}: {}".format(direction, station_ids[direction]))
+        print("New ID {} is {}".format(station_ids[direction], direction))
 # finished
 print("Got all IDs!")
 
@@ -69,7 +69,7 @@ for origin, direction in reqs: # iterate over each origin/direction tuple
         # how much until departure?
         timediff = t - now
         print(t, time.localtime(t), timediff,
-              "departs in {:+03}:{:02}".format(timediff // 60, timediff % 60))
+              "departs in {: 03}:{:02}".format(timediff // 60, timediff % 60))
         # should we keep this departure?
         if timediff > 0: # is it in the future?
             if timediff < 99 * 60: # is it in the next 99 mins

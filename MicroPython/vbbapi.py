@@ -5,9 +5,8 @@ class API:
     def __init__(self):
         self.base_url = "http://demo.hafas.de/openapi/vbb-proxy/"
 
-        f = open("apikey.txt","r")
-        self.api_key =  f.readline().rstrip()
-        f.close()
+        with open("apikey.txt","r") as f:
+            self.api_key =  f.readline().rstrip()
 
         self.tail = "format=json&accessId={}".format(self.api_key)
 
