@@ -14,6 +14,8 @@ a = vbbapi.API()
 def get_departures(origin, direction):
     return a.get_departures(origin, 5, direction, True)
 
+num_departures = 5
+
 reqs = [
         ("Strassmannstr",      "Eberswalder"),
         ("Strassmannstr",      "Frankfurter_Tor"),
@@ -26,6 +28,18 @@ reqs = [
        ]
 
 sids = {}
+
+with open("stationids.txt","r") as f:
+    while True:
+        line = f.readline()
+        if line:
+            sid, sname = line.split(' ')
+            sids[sname.strip()] = sid.strip()
+            print("ID {} is {}".format(sid.strip(), sname.strip()))
+        else:
+            break
+
+
 for origin, direction in reqs:
     if not origin in sids:
         sids[origin] = a.get_station_id(origin)
@@ -34,16 +48,40 @@ for origin, direction in reqs:
         sids[direction] = a.get_station_id(direction)
         print("Got ID for {}: {}".format(direction, sids[direction]))
 
-sids["Bersarinplatz"] = "9120816" # Bersarin (Weidenweg) can't be found by location.name?
 print("Got all IDs!")
 
 gc.collect()
 print(gc.mem_free())
 
+out = []
 for origin, direction in reqs:
-    print(origin, direction)
+    print("{} -> {}".format(origin, direction))
     departures = get_departures(sids[origin], sids[direction])
+    _out = []
     for t in departures:
-        print(t, time.localtime(t), "departs in {:+03}:{:02}".format((t - now) // 60, (t - now) % 60))
+        timediff = t - now
+        print(t, time.localtime(t), timediff,  "departs in {:+03}:{:02}".format(timediff // 60, timediff % 60))
+
+        if timediff > 0:
+            if timediff < 99 * 60:
+                _out.append(timediff)
+            else: # can't display more than 99 mins
+                _out.append("-999")
+
+    if len(_out) < num_departures:
+        for i in range(len(_out), num_departures):
+            _out.extend(["-999"])
+
+    out.append(_out)
     gc.collect()
     print(gc.mem_free())
+
+# print(out)
+
+print("")
+print("{")
+for dirs in out:
+    for deps in dirs:
+        print("{:>4} \t".format(deps), end="")
+    print("")
+print("}")
