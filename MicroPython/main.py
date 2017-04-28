@@ -1,21 +1,24 @@
+# system modules
+import utime as time
 import gc
-
+# custom modules
 import wifi
 import ntp
-import utime as time
 import vbbapi
 
+# connect to WiFi
 w = wifi.WiFi()
 
+# get current time from NTP server
 now = ntp.get_time()
 print(time.localtime(now))
 
+# connect to VBB API server
 a = vbbapi.API()
-def get_departures(origin, direction):
+def get_departures(origin, direction): # shorthand function
     return a.get_departures(origin, 5, direction, True)
 
-num_departures = 5
-
+# configure the request
 reqs = [
         ("Strassmannstr",      "Eberswalder"),
         ("Strassmannstr",      "Frankfurter_Tor"),
@@ -26,58 +29,64 @@ reqs = [
         ("Bersarinplatz",      "Lichtenberg_Gudrunstr"),
         ("Bersarinplatz",      "Wilhelminenhofstr")
        ]
+num_departures = 5
 
-sids = {}
-
+# read station IDs
+station_ids = {}
+# check file for cached IDs
 with open("stationids.txt","r") as f:
     while True:
         line = f.readline()
         if line:
             sid, sname = line.split(' ')
-            sids[sname.strip()] = sid.strip()
+            station_ids[sname.strip()] = sid.strip()
             print("ID {} is {}".format(sid.strip(), sname.strip()))
         else:
             break
-
-
+# get missing IDs from API
 for origin, direction in reqs:
-    if not origin in sids:
-        sids[origin] = a.get_station_id(origin)
-        print("Got ID for {}: {}".format(origin, sids[origin]))
-    if not direction in sids:
-        sids[direction] = a.get_station_id(direction)
-        print("Got ID for {}: {}".format(direction, sids[direction]))
-
+    if not origin in station_ids:
+        station_ids[origin] = a.get_station_id(origin)
+        print("Got ID for {}: {}".format(origin, station_ids[origin]))
+    if not direction in station_ids:
+        station_ids[direction] = a.get_station_id(direction)
+        print("Got ID for {}: {}".format(direction, station_ids[direction]))
+# finished
 print("Got all IDs!")
 
+# free up some memory?
 gc.collect()
 print(gc.mem_free())
 
+# get departure times
 out = []
-for origin, direction in reqs:
+for origin, direction in reqs: # iterate over each origin/direction tuple
     print("{} -> {}".format(origin, direction))
-    departures = get_departures(sids[origin], sids[direction])
+    # request departure times from API
+    departures = get_departures(station_ids[origin], station_ids[direction])
     _out = []
-    for t in departures:
+    for t in departures: # iterate over each received departure time
+        # how much until departure?
         timediff = t - now
-        print(t, time.localtime(t), timediff,  "departs in {:+03}:{:02}".format(timediff // 60, timediff % 60))
-
-        if timediff > 0:
-            if timediff < 99 * 60:
+        print(t, time.localtime(t), timediff,
+              "departs in {:+03}:{:02}".format(timediff // 60, timediff % 60))
+        # should we keep this departure?
+        if timediff > 0: # is it in the future?
+            if timediff < 99 * 60: # is it in the next 99 mins
                 _out.append(timediff)
-            else: # can't display more than 99 mins
+            else: # add placeholder if not
                 _out.append("-999")
-
+    # add placeholders for padding
     if len(_out) < num_departures:
         for i in range(len(_out), num_departures):
             _out.extend(["-999"])
-
+    # add to list
     out.append(_out)
+
     gc.collect()
     print(gc.mem_free())
 
-# print(out)
-
+# Output data to Arduino
 print("")
 print("{")
 for dirs in out:
