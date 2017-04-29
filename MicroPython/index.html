@@ -1,0 +1,38 @@
+<h1>TrainTimes Configurator</h1>
+<form>
+  <fieldset>
+    <legend>Wifi Configuration</legend>
+    <input type="text"     name="ssid"     value="" placeholder="SSID" />
+    <input type="password" name="pw"       value="" placeholder="Password" />
+    <input type="submit"   name="savewifi" value="SAVE" />
+  </fieldset>
+</form>
+<form>
+  <fieldset>
+    <legend>Departures</legend>
+    Number of displays:
+    <input type="number" name="numdisp" min="0" max="8" value="1">
+    <input type="submit" name="savenum" value="Update" />
+    <table>
+      <tr>
+        <td></td>
+        <td>Station</td>
+        <td></td>
+        <td></td>
+        <td>Direction</td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>1</td>
+        <td><input type="text"   name="sname"  placeholder="Station name" /></td>
+        <td><input type="submit" name="getsid" value="Get ID" /></td>
+        <td><input type="text"   name="sid"    placeholder="Station ID"/></td>
+        <td><input type="text"   name="dname"  placeholder="Direction name" /></td>
+        <td><input type="submit" name="getdid" value="Get ID" /></td>
+        <td><input type="text"   name="did"    placeholder="Direction ID"/></td>
+      </tr>
+    </table>
+    <input type="submit" name="savedep" value="SAVE" />
+  </fieldset>
+</form>
