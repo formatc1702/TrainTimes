@@ -5,66 +5,6 @@ import wifi
 
 w = wifi.WiFi()
 
-#HTML to send to browsers
-html = """<!DOCTYPE html>
-<html>
-<head> <title>ESP8266 LED ON/OFF</title> </head>
-<center><h2>A simple webserver for turning HUZZAH Feather LED's on and off with Micropython</h2></center>
-<center><h3>(for noobs to both the ESP8266 and Micropython)</h3></center>
-<form>
-LED0:
-<button name="LED" value="ON0" type="submit">LED ON</button>
-<button name="LED" value="OFF0" type="submit">LED OFF</button><br><br>
-LED2:
-<button name="LED" value="ON2" type="submit">LED ON</button>
-<button name="LED" value="OFF2" type="submit">LED OFF</button>
-</form>
-<!DOCTYPE html>
-<html>
-<form>
-  <fieldset>
-    <legend>Wifi Configuration</legend>
-    <input type="text"     name="ssid"     value="%s" placeholder="SSID" />
-    <input type="password" name="pw"       value="%s" placeholder="Password" />
-    <input type="submit"   name="savewifi" value="SAVE" />
-  </fieldset>
-</form>
-<form>
-  <fieldset>
-    <legend>Departures</legend>
-    Number of displays:
-    <input type="number" name="numdisp" min="0" max="8" value="1">
-    <input type="submit" name="savenum" value="Update" />
-    <table>
-      <tr>
-        <td></td>
-        <td>Station</td>
-        <td></td>
-        <td></td>
-        <td>Direction</td>
-        <td></td>
-        <td></td>
-      </tr>
-      <tr>
-        <td>1</td>
-        <td><input type="text"   name="sname"  placeholder="Station name" /></td>
-        <td><input type="submit" name="getsid" value="Get ID" /></td>
-        <td><input type="text"   name="sid"    placeholder="Station ID"/></td>
-        <td><input type="text"   name="dname"  placeholder="Direction name" /></td>
-        <td><input type="submit" name="getdid" value="Get ID" /></td>
-        <td><input type="text"   name="did"    placeholder="Direction ID"/></td>
-      </tr>
-    </table>
-    <input type="submit" name="savedep" value="SAVE" />
-  </fieldset>
-</form>
-</html>
-"""
-
-#Setup PINS
-LED0 = machine.Pin(0, machine.Pin.OUT)
-LED2 = machine.Pin(2, machine.Pin.OUT)
-
 #Setup Socket WebServer
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.bind(('', 80))
@@ -73,44 +13,67 @@ while True:
     conn, addr = s.accept()
     print("Got a connection from %s" % str(addr))
     request = conn.recv(1024)
-    # print("Content = %s" % str(request))
     request = str(request)
+    # print(request)
 
-    get = request.split("?")[1].split(" ")[0]
+    # extract GET parameters
+    # get everything after the '?'
+    if "?" in request:
+        get = request.split("?")[1].split(" ")[0]
+        # extract individual key=value pairs
+        all_params = get.split("&")
+        params = {}
+        print("Got these parameters:")
+        for i in all_params:
+            k, v = i.split("=")
+            params[k] = v
+            print("{}: {}".format(k,v))
 
-    print("")
-    print("")
-    print(get)
-    allitems = get.split("&")
-    items = {}
-    items["ssid"] = "deault ssid"
-    items["pw"] = "deault pw"
-    for i in allitems:
-        k, v = i.split("=")
-        items[k] = v
+        # do stuff based on parameters
 
-    print(items)
-    print("")
-    print("")
+        # update wifi credentials
+        if 'savewifi' in params:
+            print("Changing the wifi credentials")
+            print("New SSID: {}".format(params["ssid"]))
+            print("New PW:   {}".format(params["pw"]))
+            with open("wificonfig.txt","w") as f:
+                f.write("{}\n".format(params["ssid"]))
+                f.write("{}\n".format(params["pw"]))
 
-    LEDON0 = request.find('/?LED=ON0')
-    LEDOFF0 = request.find('/?LED=OFF0')
-    LEDON2 = request.find('/?LED=ON2')
-    LEDOFF2 = request.find('/?LED=OFF2')
-    #print("Data: " + str(LEDON0))
-    #print("Data2: " + str(LEDOFF0))
-    if LEDON0 == 6:
-        # print('TURN LED0 ON')
-        LED0.low()
-    if LEDOFF0 == 6:
-        # print('TURN LED0 OFF')
-        LED0.high()
-    if LEDON2 == 6:
-        # print('TURN LED2 ON')
-        LED2.low()
-    if LEDOFF2 == 6:
-        # print('TURN LED2 OFF')
-        LED2.high()
-    response = html % (items["ssid"], items["pw"])
-    conn.send(response)
+    else:
+        params = {}
+        print("Got no parameters")
+
+    # retrieve wifi credentials
+    try:
+        with open("wificonfig.txt","r") as f:
+            real_ssid = f.readline().strip()
+            real_pw   = f.readline().strip()
+        print("Got these credentials from file:")
+        print("{} : {}".format(real_ssid, real_pw))
+    except:
+        print("Error reading wifi config file")
+        real_ssid = ""
+        real_pw   = ""
+
+    # initialize placeholders
+    replacements = {
+                    "$SSID": real_ssid,
+                    "$PW":   real_pw
+                   }
+
+    # serve file filling placeholders
+    with open("index.html","r") as f:
+        while True:
+            line = f.readline()
+            if line:
+                for old, new in replacements.items():
+                    if old in line:
+                        line = line.replace(old, new)
+                        print("Replaced {} with {}".format(old, new))
+
+                conn.send(line)
+            else:
+                break
+
     conn.close()

@@ -1,9 +1,13 @@
+<!DOCTYPE html>
+<html>
+<body style="font-family:osifont, monospace">
 <h1>TrainTimes Configurator</h1>
+<a href="/">Home</a>
 <form>
   <fieldset>
     <legend>Wifi Configuration</legend>
-    <input type="text"     name="ssid"     value="" placeholder="SSID" />
-    <input type="password" name="pw"       value="" placeholder="Password" />
+    <input type="text"     name="ssid"     value="$SSID" placeholder="SSID" />
+    <input type="password" name="pw"       value="$PW" placeholder="Password" />
     <input type="submit"   name="savewifi" value="SAVE" />
   </fieldset>
 </form>
@@ -36,3 +40,5 @@
     <input type="submit" name="savedep" value="SAVE" />
   </fieldset>
 </form>
+</body>
+</html>
