@@ -26,17 +26,17 @@ def debug(*args,**kwargs):
 
 # displays = [station_name, walktime_min, [direction_1], [direction_n]]
 displays = [
-    ["Strassmannstr", 2,
+    ["Strassmannstr+(Berlin)", 2,
         ["Friedrich-Ludwig-Jahn-Sportpark", "S+U Hauptbahnhof"],
         ["S+U Warschauer Str."]]
     ,
-    ["S+Landsberger+Allee+%28Berlin%29", 8,
+    ["S+Landsberger+Allee+(Berlin)", 8,
         ["Ringbahn S 42"],
         ["Ringbahn S 41"],
         ["Blankenburg", "Pankow ", "Birkenwerder", "Waidmannslust", "Henningsdorf", "Bernau"],
         ["S Flughafen Berlin-Sch&#246;nefeld Bhf", "Sch&#246;neweide", "Gr&#252;nau", "Zeuthen", "Spindlersfeld", "Wusterhausen"]]
     ,
-    ["Bersarinplatz", 6,
+    ["Bersarinplatz+Weidenweg", 6,
         ["Lichtenberg"],
         ["Sch&#246;neweide"]]
     ]
