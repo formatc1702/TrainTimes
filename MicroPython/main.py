@@ -7,7 +7,7 @@ import esp
 # import datetime
 # from datetime import datetime
 
-debug_mode = False
+debug_mode = True
 
 led = Pin(2)
 led.init(Pin.OUT)
