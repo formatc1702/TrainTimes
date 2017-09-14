@@ -67,6 +67,7 @@ def http_get(url,sta_index,nnnow):
     s.send(bytes("GET /%s HTTP/1.0\r\nHost: %s\r\n\r\n" % (path, host), "utf8"))
     while True:
         line = s.readline()
+        debug(line)
         if line:
             if "<tr class=\"ivu_table_" in line:
                 # extract relevant lines and clean them up
@@ -142,6 +143,7 @@ for i in range(0,40): # attempt to connect
         for sta_index, station in enumerate(displays):
             led.high()
             url = "http://mobil.bvg.de/Fahrinfo/bin/stboard.bin/dox?input=" + station[0] + "&start=Suchen&boardType=depRT"
+            debug(url)
             # print(station[0])
             # print(url)
             walktime   = station[1]
