@@ -5,6 +5,7 @@ import gc
 import wifi
 import ntp
 import vbbapi
+from machine import UART
 
 # connect to WiFi
 w = wifi.WiFi()
@@ -87,10 +88,12 @@ for origin, direction in reqs: # iterate over each origin/direction tuple
     print(gc.mem_free())
 
 # Output data to Arduino
-print("")
-print("{")
+uart = UART(1,9600) # TX: GPIO2=D4, RX: none? (GPIO is also LED!)
+uart.write("")
+uart.write("{")
 for dirs in out:
     for deps in dirs:
-        print("{:>4} \t".format(deps), end="")
+        uart.write("{:>4} \t".format(deps))
+        print     ("{:>4} \t".format(deps), end="")
     print("")
-print("}")
+uart.write("}")
