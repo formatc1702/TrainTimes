@@ -1,0 +1,11 @@
+900120515 Strassmannstr
+900110006 Eberswalder
+900120008 Frankfurter_Tor
+900110004 S_Landsberger_Allee
+900007102 S_Gesundbrunnen
+900078201 S_Neukolln
+900110011 S_Bornholmer_Strasse
+900192001 S_Schoneweide
+900120816 Bersarinplatz
+900160021 Lichtenberg_Gudrunstr
+900181001 Wilhelminenhofstr

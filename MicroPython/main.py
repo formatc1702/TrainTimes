@@ -1,200 +1,128 @@
-import network
-import usocket as socket
-import ustruct as struct
-import utime   as time
-from machine import UART, Pin # connect D4 pin (TX) to RX line on the display
+# system modules
+import utime as time
+import gc
+# custom modules
+import wifi
+import ntp
+import vbbapi
+from machine import UART
 import esp
-# import datetime
-# from datetime import datetime
 
-debug_mode = True
+debugging = False
 
-led = Pin(2)
-led.init(Pin.OUT)
-led.high() # LED off
+# connect to WiFi
+w = wifi.WiFi()
 
-def blink_on(times):
-    for i in range(0,times):
-        led.low()
-        time.sleep(0.25)
-        led.high()
-        time.sleep(0.25)
+# get current time from NTP server
+now = ntp.get_time()
+if debugging:
+    print(time.localtime(now))
 
-def debug(*args,**kwargs):
-    if debug_mode == True:
-        print(*args,**kwargs)
+# connect to VBB API server
+a = vbbapi.API()
+def get_departures(origin, direction): # shorthand function
+    return a.get_departures(origin, 5, direction, False)
 
-# displays = [station_name, walktime_min, [direction_1], [direction_n]]
-displays = [
-    ["Strassmannstr+(Berlin)", 2,
-        ["Friedrich-Ludwig-Jahn-Sportpark", "S+U Hauptbahnhof"],
-        ["S+U Warschauer Str."]]
-    ,
-    ["S+Landsberger+Allee+(Berlin)", 8,
-        ["Ringbahn S 42"],
-        ["Ringbahn S 41"],
-        ["Blankenburg", "Pankow ", "Birkenwerder", "Waidmannslust", "Henningsdorf", "Bernau"],
-        ["S Flughafen Berlin-Sch&#246;nefeld Bhf", "Sch&#246;neweide", "Gr&#252;nau", "Zeuthen", "Spindlersfeld", "Wusterhausen"]]
-    ,
-    ["Bersarinplatz+Weidenweg", 6,
-        ["Lichtenberg"],
-        ["Sch&#246;neweide"]]
-    ]
+# configure the request
+reqs = [
+        ("Strassmannstr",      2, "Eberswalder"),
+        ("Strassmannstr",      2, "Frankfurter_Tor"),
+        ("S_Landsberger_Allee",5,"S_Gesundbrunnen"),
+        ("S_Landsberger_Allee",5,"S_Neukolln"),
+        ("S_Landsberger_Allee",5,"S_Bornholmer_Strasse"),
+        ("S_Landsberger_Allee",5,"S_Schoneweide"),
+        ("Bersarinplatz",      5,"Lichtenberg_Gudrunstr"),
+        ("Bersarinplatz",      5,"Wilhelminenhofstr")
+       ]
+num_departures = 5
 
-results = [[[],[]],[[],[],[],[]],[[],[]]]
-
-def get_time():
-    #NTP_DELTA = 3155673600 - 1 * 60 * 60 # Adjust for CET
-    NTP_DELTA = 3155673600 - 2 * 60 * 60 # Adjust for CEST... TODO: Make timezones smarter
-    host = "pool.ntp.org"
-    NTP_QUERY = bytearray(48)
-    NTP_QUERY[0] = 0x1b
-    addr = socket.getaddrinfo(host, 123)[0][-1]
-    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    s.settimeout(1)
-    res = s.sendto(NTP_QUERY, addr)
-    msg = s.recv(48)
-    s.close()
-    val = struct.unpack("!I", msg[40:44])[0]
-    return val - NTP_DELTA
-
-def http_get(url,sta_index,nnnow):
-    _, _, host, path = url.split('/', 3)
-    addr = socket.getaddrinfo(host, 80)[0][-1]
-    s = socket.socket()
-    s.connect(addr)
-    debug("Socket connected!")
-    s.send(bytes("GET /%s HTTP/1.0\r\nHost: %s\r\n\r\n" % (path, host), "utf8"))
+# read station IDs
+station_ids = {}
+# check file for cached IDs
+with open("stationids.txt","r") as f:
     while True:
-        line = s.readline()
-        debug(line)
+        line = f.readline()
         if line:
-            if "<tr class=\"ivu_table_" in line:
-                # extract relevant lines and clean them up
-                departure_full_line = s.readline()
-                # print(" ")
-                # print(departure_full_line)
-                departure_str = departure_full_line[12:17]
-                s.readline()
-                s.readline()
-                s.readline()
-                number_full_line = s.readline()
-                # print(number_full_line)
-                number_str = number_full_line[8:-10]
-                s.readline()
-                s.readline()
-                s.readline()
-                direction_full_line = s.readline()
-                # print(direction_full_line)
-                if "<td>" in direction_full_line:
-                    direction_full_line = s.readline()
-                    # print("->",direction_full_line)
-                # check if this train is actually relevant
-                # iterate through all directions tram can go at one station
-                for dir_index, direction in enumerate(directions):
-                     # iterate through all destinations in that direction
-                    for destination_want in direction:
-                         # is the tram going where we want it to?
-                        if destination_want in direction_full_line:
-                            debug(departure_str," : ",number_str," > ",direction_full_line)
-                            now_tuple = time.localtime(nnnow)
-                            # print(now_tuple)
-                            departure = time.mktime((now_tuple[0],
-                                                     now_tuple[1],
-                                                     now_tuple[2],
-                                                     int(departure_str[0:2]),
-                                                     int(departure_str[3:5]),
-                                                     0,0,0))
-                            departure_tuple = time.localtime(departure)
-                            debug(departure_tuple)
-                            difference = departure - now
-                            # TODO: Check if end of day/month/year
-                            if   difference >= walktime * 60: # OK!
-                                results[sta_index][dir_index] += [difference]
-                                debug(difference)
-                            elif difference <= 0: # avoid sending a 0 (breaks the ParseInt function on Arduino side)
-                                debug(difference, "<60")
-                            else: # connection is in the past
-                                debug(difference, "<=0")
+            sid, sname = line.split(' ')
+            station_ids[sname.strip()] = sid.strip()
+            if debugging:
+                print("ID {} is {}".format(sid.strip(), sname.strip()))
         else:
             break
+# get missing IDs from API
+for origin, walktime, direction in reqs:
+    if not origin in station_ids:
+        station_ids[origin]    = a.get_station_id(origin)
+        if debugging:
+            print("New ID {} is {}".format(station_ids[origin],    origin))
+    if not direction in station_ids:
+        station_ids[direction] = a.get_station_id(direction)
+        if debugging:
+            print("New ID {} is {}".format(station_ids[direction], direction))
+# finished
+if debugging:
+    print("Got all IDs!")
 
-wifi_config = open("wificonfig.txt","r")
-my_ap = wifi_config.readline().rstrip()
-my_pw = wifi_config.readline().rstrip()
-wifi_config.close()
-debug("Hello!")
-wlan = network.WLAN(network.STA_IF)
-wlan.active(True)
-debug("SSID: ", my_ap)
-debug("PWD:  ", my_pw)
+# free up some memory?
+gc.collect()
+if debugging:
+    print(gc.mem_free())
 
-wlan.connect(my_ap, my_pw)
-for i in range(0,40): # attempt to connect
-    ip,mask,gateway,dns = wlan.ifconfig()
-    if ip == "0.0.0.0": #not connected
-        debug(".")
-        time.sleep(1)
-    else: #connected!
-        debug("Got IP: ", ip)
-        blink_on(2)
-        now = get_time()
-        debug("Got current time: ", time.localtime(now))
-        for sta_index, station in enumerate(displays):
-            led.high()
-            url = "http://mobil.bvg.de/Fahrinfo/bin/stboard.bin/dox?input=" + station[0] + "&start=Suchen&boardType=depRT"
-            debug(url)
-            # print(station[0])
-            # print(url)
-            walktime   = station[1]
-            directions = station[2:]
-            http_get(url,sta_index,now)
-            led.low()
+# get departure times
+out = []
+for origin, walktime, direction in reqs: # iterate over each origin/direction tuple
+    if debugging:
+        print("{} -> {}".format(origin, direction))
+    # request departure times from API
+    departures = get_departures(station_ids[origin], station_ids[direction])
+    _out = []
+    for t in departures: # iterate over each received departure time
+        # how much until departure?
+        timediff = t - now
+        if debugging:
+            print(t, time.localtime(t), timediff,
+                  "departs in {: 03}:{:02}".format(timediff // 60, timediff % 60))
+        # should we keep this departure?
+        if timediff > 0: # is it in the future?
+            if timediff < 99 * 60: # is it in the next 99 mins but at least 2 min in future?
+                if timediff > walktime * 60:
+                    _out.append(timediff)
+            else: # add placeholder if not
+                _out.append("-999")
+    # add placeholders for padding
+    if len(_out) < num_departures:
+        for i in range(len(_out), num_departures):
+            _out.extend(["-999"])
+    # add to list
+    out.append(_out)
 
-        wlan.disconnect()
+    gc.collect()
+    if debugging:
+        print(gc.mem_free())
 
-        uart = UART(1,9600) # TX: GPIO2=D4, RX: none? (GPIO is also LED!)
-        # uart = UART(2,9600) # TX: GPIO15=D8, RX: GPIO13=D7, not implemented?
+# Output data to Arduino
+print("BEGIN SEND")
+uart = UART(1,9600) # TX: GPIO2=D4, RX: none? (GPIO is also LED!)
+time.sleep(0.1)
+uart.write('{')
+uart.write('\n')
+for dirs in out:
+    for deps in dirs:
+        uart.write("{} \n".format(deps))
+    time.sleep(0.05) # give Arduino time to read the buffer
+uart.write("}")
+uart.write('\n')
+uart.write('\n')
+print("END SEND")
+print("")
+for dirs in out:
+    for deps in dirs:
+        print     ("{}\t".format(deps), end="")
+        # print     ("{:>4} \t".format(deps), end="")
+    print("")
+print("")
 
-        for i in range(0,5): # send results to Arduino until ACK is received
-            uart.write('{')
-            uart.write('\n')
-            for idx_station, station in enumerate(results):
-                # debug(displays[idx_station][0])
-                for direction in station:
-                    n = len(direction)
-                    if n > 5:
-                        direction = direction[0:5]
-                    if n < 5:
-                        for i in  range(n,5):
-                            direction += [-999]
-                    debug (direction)
-                    uart.write(str(direction))
-                    uart.write('\n')
-                    time.sleep_ms(50)
-            uart.write('}')
-            uart.write('\n')
-            uart.write('\n')
-
-            # TODO: read ACK/ERR from Arduino
-
-            if (True): # TODO: Actually check ACK/ERR
-                time.sleep(0.1)
-                debug("SUCCESS")
-                led.init(Pin.OUT) # led pin is UART tx, reclaim it here
-                led.low()
-                time.sleep(2)
-                led.high()
-                break
-        else:
-            debug("ERROR: Could not get ACK")
-        debug("Discronnect from WiFi")
-        wlan.disconnect()
-        break
-else:
-    debug("ERROR: Could not connect to WiFi")
-
-debug("Turn off WiFi")
-wlan.active(False)
-debug("Set to deep sleep... good night!")
-esp.deepsleep()
+if debugging == False:
+    w.wlan.active(False)
+    print("Good night!")
+    esp.deepsleep()
