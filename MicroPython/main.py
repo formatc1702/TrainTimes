@@ -17,18 +17,18 @@ print(time.localtime(now))
 # connect to VBB API server
 a = vbbapi.API()
 def get_departures(origin, direction): # shorthand function
-    return a.get_departures(origin, 5, direction, True)
+    return a.get_departures(origin, 5, direction, False)
 
 # configure the request
 reqs = [
-        ("Strassmannstr",      "Eberswalder"),
-        ("Strassmannstr",      "Frankfurter_Tor"),
-        ("S_Landsberger_Allee","S_Gesundbrunnen"),
-        ("S_Landsberger_Allee","S_Neukolln"),
-        ("S_Landsberger_Allee","S_Bornholmer_Strasse"),
-        ("S_Landsberger_Allee","S_Schoneweide"),
-        ("Bersarinplatz",      "Lichtenberg_Gudrunstr"),
-        ("Bersarinplatz",      "Wilhelminenhofstr")
+        ("Strassmannstr",      2, "Eberswalder"),
+        ("Strassmannstr",      2, "Frankfurter_Tor"),
+        ("S_Landsberger_Allee",5,"S_Gesundbrunnen"),
+        ("S_Landsberger_Allee",5,"S_Neukolln"),
+        ("S_Landsberger_Allee",5,"S_Bornholmer_Strasse"),
+        ("S_Landsberger_Allee",5,"S_Schoneweide"),
+        ("Bersarinplatz",      5,"Lichtenberg_Gudrunstr"),
+        ("Bersarinplatz",      5,"Wilhelminenhofstr")
        ]
 num_departures = 5
 
@@ -45,7 +45,7 @@ with open("stationids.txt","r") as f:
         else:
             break
 # get missing IDs from API
-for origin, direction in reqs:
+for origin, walktime, direction in reqs:
     if not origin in station_ids:
         station_ids[origin]    = a.get_station_id(origin)
         print("New ID {} is {}".format(station_ids[origin],    origin))
@@ -73,8 +73,9 @@ for origin, direction in reqs: # iterate over each origin/direction tuple
               "departs in {: 03}:{:02}".format(timediff // 60, timediff % 60))
         # should we keep this departure?
         if timediff > 0: # is it in the future?
-            if timediff < 99 * 60: # is it in the next 99 mins
-                _out.append(timediff)
+            if timediff < 99 * 60: # is it in the next 99 mins but at least 2 min in future?
+                if timediff > walktime * 60:
+                    _out.append(timediff)
             else: # add placeholder if not
                 _out.append("-999")
     # add placeholders for padding
