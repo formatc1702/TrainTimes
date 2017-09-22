@@ -7,12 +7,15 @@ import ntp
 import vbbapi
 from machine import UART
 
+debugging = False
+
 # connect to WiFi
 w = wifi.WiFi()
 
 # get current time from NTP server
 now = ntp.get_time()
-print(time.localtime(now))
+if debugging:
+    print(time.localtime(now))
 
 # connect to VBB API server
 a = vbbapi.API()
@@ -41,36 +44,43 @@ with open("stationids.txt","r") as f:
         if line:
             sid, sname = line.split(' ')
             station_ids[sname.strip()] = sid.strip()
-            print("ID {} is {}".format(sid.strip(), sname.strip()))
+            if debugging:
+                print("ID {} is {}".format(sid.strip(), sname.strip()))
         else:
             break
 # get missing IDs from API
 for origin, walktime, direction in reqs:
     if not origin in station_ids:
         station_ids[origin]    = a.get_station_id(origin)
-        print("New ID {} is {}".format(station_ids[origin],    origin))
+        if debugging:
+            print("New ID {} is {}".format(station_ids[origin],    origin))
     if not direction in station_ids:
         station_ids[direction] = a.get_station_id(direction)
-        print("New ID {} is {}".format(station_ids[direction], direction))
+        if debugging:
+            print("New ID {} is {}".format(station_ids[direction], direction))
 # finished
-print("Got all IDs!")
+if debugging:
+    print("Got all IDs!")
 
 # free up some memory?
 gc.collect()
-print(gc.mem_free())
+if debugging:
+    print(gc.mem_free())
 
 # get departure times
 out = []
-for origin, direction in reqs: # iterate over each origin/direction tuple
-    print("{} -> {}".format(origin, direction))
+for origin, walktime, direction in reqs: # iterate over each origin/direction tuple
+    if debugging:
+        print("{} -> {}".format(origin, direction))
     # request departure times from API
     departures = get_departures(station_ids[origin], station_ids[direction])
     _out = []
     for t in departures: # iterate over each received departure time
         # how much until departure?
         timediff = t - now
-        print(t, time.localtime(t), timediff,
-              "departs in {: 03}:{:02}".format(timediff // 60, timediff % 60))
+        if debugging:
+            print(t, time.localtime(t), timediff,
+                  "departs in {: 03}:{:02}".format(timediff // 60, timediff % 60))
         # should we keep this departure?
         if timediff > 0: # is it in the future?
             if timediff < 99 * 60: # is it in the next 99 mins but at least 2 min in future?
@@ -86,15 +96,24 @@ for origin, direction in reqs: # iterate over each origin/direction tuple
     out.append(_out)
 
     gc.collect()
-    print(gc.mem_free())
+    if debugging:
+        print(gc.mem_free())
 
 # Output data to Arduino
+print("BEGIN SEND")
 uart = UART(1,9600) # TX: GPIO2=D4, RX: none? (GPIO is also LED!)
-uart.write("")
-uart.write("{")
+time.sleep(0.1)
+uart.write('{')
+uart.write('\n')
 for dirs in out:
     for deps in dirs:
-        uart.write("{:>4} \t".format(deps))
-        print     ("{:>4} \t".format(deps), end="")
-    print("")
+        uart.write("{}\n".format(deps))
 uart.write("}")
+uart.write('\n')
+uart.write('\n')
+print("END SEND")
+for dirs in out:
+    for deps in dirs:
+        print     ("{}\t".format(deps), end="")
+        # print     ("{:>4} \t".format(deps), end="")
+    print("")
