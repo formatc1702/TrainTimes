@@ -107,7 +107,8 @@ uart.write('{')
 uart.write('\n')
 for dirs in out:
     for deps in dirs:
-        uart.write("{}\n".format(deps))
+        uart.write("{} \n".format(deps))
+    time.sleep(0.05) # give Arduino time to read the buffer
 uart.write("}")
 uart.write('\n')
 uart.write('\n')
