@@ -36,20 +36,21 @@ class API:
         j = urequests.get(r).json()
 
         times = []
-        for departure in j["Departure"]:
-            if "rtTime" in departure:
-                datestring = departure["rtDate"]
-                timestring = departure["rtTime"]
-                if verbose:
-                    print("REAL TIME")
-            else:
-                datestring = departure["date"]
-                timestring = departure["time"]
-                if verbose:
-                    print ("NOT!!!")
+        if "Departure" in j:
+            for departure in j["Departure"]:
+                if "rtTime" in departure:
+                    datestring = departure["rtDate"]
+                    timestring = departure["rtTime"]
+                    if verbose:
+                        print("REAL TIME")
+                else:
+                    datestring = departure["date"]
+                    timestring = departure["time"]
+                    if verbose:
+                        print ("NOT!!!")
 
-            year, month,  day    = [int(i) for i in datestring.split('-')]
-            hour, minute, second = [int(i) for i in timestring.split(':')]
-            u = time.mktime([year, month, day, hour, minute, second, 0, 0])
-            times.append(u)
+                year, month,  day    = [int(i) for i in datestring.split('-')]
+                hour, minute, second = [int(i) for i in timestring.split(':')]
+                u = time.mktime([year, month, day, hour, minute, second, 0, 0])
+                times.append(u)
         return times
