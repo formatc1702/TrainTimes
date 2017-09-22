@@ -6,6 +6,7 @@ import wifi
 import ntp
 import vbbapi
 from machine import UART
+import esp
 
 debugging = False
 
@@ -113,8 +114,15 @@ uart.write("}")
 uart.write('\n')
 uart.write('\n')
 print("END SEND")
+print("")
 for dirs in out:
     for deps in dirs:
         print     ("{}\t".format(deps), end="")
         # print     ("{:>4} \t".format(deps), end="")
     print("")
+print("")
+
+if debugging == False:
+    w.wlan.active(False)
+    print("Good night!")
+    esp.deepsleep()
