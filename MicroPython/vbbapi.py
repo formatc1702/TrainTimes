@@ -3,7 +3,7 @@ import utime as time
 
 class API:
     def __init__(self):
-        self.base_url = "http://demo.hafas.de/openapi/vbb-proxy/"
+        self.base_url = "http://fahrinfo.vbb.de/restproxy/"
 
         with open("apikey.txt","r") as f:
             self.api_key =  f.readline().rstrip()
@@ -30,7 +30,7 @@ class API:
         else:
             p_dir = ""
 
-        r = self.create_request("departureBoard?extId={}{}{}".format(station_id, p_dir, p_journeys))
+        r = self.create_request("departureBoard?id={}{}{}".format(station_id, p_dir, p_journeys))
         if verbose:
             print(r)
         j = urequests.get(r).json()
