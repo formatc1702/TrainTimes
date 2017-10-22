@@ -21,7 +21,7 @@ if debugging:
 # connect to VBB API server
 a = vbbapi.API()
 def get_departures(origin, direction): # shorthand function
-    return a.get_departures(origin, 5, direction, False)
+    return a.get_departures(origin, 5, direction, debugging)
 
 # configure the request
 reqs = [
