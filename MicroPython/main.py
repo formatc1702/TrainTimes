@@ -25,13 +25,13 @@ def get_departures(origin, direction): # shorthand function
 
 # configure the request
 reqs = [
-        ("Strassmannstr",      2, "Eberswalder"),
-        ("Strassmannstr",      2, "Frankfurter_Tor"),
+        ("Strassmannstr",      2,"Eberswalder"),
+        ("Strassmannstr",      2,"Frankfurter_Tor"),
         ("S_Landsberger_Allee",5,"S_Gesundbrunnen"),
         ("S_Landsberger_Allee",5,"S_Neukolln"),
         ("S_Landsberger_Allee",5,"S_Bornholmer_Strasse"),
         ("S_Landsberger_Allee",5,"S_Schoneweide"),
-        ("Bersarinplatz",      5,"Lichtenberg_Gudrunstr"),
+        ("Landsbg_Petersbg",   5,"Georg_Knorr"),
         ("Bersarinplatz",      5,"Wilhelminenhofstr")
        ]
 num_departures = 5

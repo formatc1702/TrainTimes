@@ -9,3 +9,5 @@
 900120816 Bersarinplatz
 900160021 Lichtenberg_Gudrunstr
 900181001 Wilhelminenhofstr
+900120016 Landsbg_Petersbg
+900170521 Georg_Knorr
