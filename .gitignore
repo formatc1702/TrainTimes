@@ -1,6 +1,8 @@
+venv/
 Old/*
 */#Tests/*
 */#Old/*
 VBB-API
 apikey.txt
 TrainTimes.stc
+.DS_Store
