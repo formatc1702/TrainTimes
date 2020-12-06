@@ -5,7 +5,7 @@ import gc
 import wifi
 import ntp
 import vbbapi
-from machine import UART
+from machine import UART, Pin
 import esp
 
 debugging = False
@@ -13,8 +13,19 @@ debugging = False
 # connect to WiFi
 w = wifi.WiFi()
 
+# use switch on GPIO 4 (D2)
+pin_summertime = Pin(4, Pin.IN, Pin.PULL_UP)
+if pin_summertime.value() == 0:  # swtich is pressed (low) = summertime
+    summertime = True
+    if debugging:
+        print('Using CEST')
+else:
+    summertime = False
+    if debugging:
+        print('Using CET')
+
 # get current time from NTP server
-now = ntp.get_time()
+now = ntp.get_time(summertime)
 if debugging:
     print(time.localtime(now))
 

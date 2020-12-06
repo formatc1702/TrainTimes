@@ -2,9 +2,10 @@ import usocket as socket
 import ustruct as struct
 import utime as time
 
-def get_time():
-    #NTP_DELTA = 3155673600 - 1 * 60 * 60 # Adjust for CET
-    NTP_DELTA = 3155673600 - 2 * 60 * 60 # Adjust for CEST... TODO: Make timezones smarter
+def get_time(summertime):
+    NTP_DELTA = 3155673600 - 1 * 60 * 60  # adjust for CET
+    if summertime:
+        NTP_DELTA = NTP_DELTA - 1 * 60 * 60  # adjust for CEST if necessary
     host = "pool.ntp.org"
     NTP_QUERY = bytearray(48)
     NTP_QUERY[0] = 0x1b
