@@ -1,4 +1,0 @@
-open tty.SLAB_USBtoUART
-put ../wificonfig.txt
-ls
-repl
