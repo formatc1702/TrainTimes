@@ -1,1 +1,2 @@
 insert-api-key-here-012345
+# insert your VBB API key, rename this file to apikey.txt and remove this line
