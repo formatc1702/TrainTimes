@@ -3,7 +3,7 @@ import utime as time
 
 class API:
     def __init__(self):
-        self.base_url = "http://fahrinfo.vbb.de/restproxy/"
+        self.base_url = "http://fahrinfo.vbb.de/restproxy/2.4/"
 
         with open("apikey.txt","r") as f:
             self.api_key =  f.readline().rstrip()
