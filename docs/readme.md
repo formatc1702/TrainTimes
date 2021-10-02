@@ -15,4 +15,7 @@ cd firmware/traintimes-micropython
 python esptool.py --port /dev/tty.usbserial-0001 erase_flash
 python esptool.py --port /dev/tty.usbserial-0001 --baud 115200 write_flash --flash_size=detect 0 esp8266-20210902-v1.17.bin
 mpfshell -s full_upload.mpf
+
+# monitor serial output
+screen /dev/tty.usbserial-0001 115200  # to exit: press ctrl+A, type :quit, press Enter
 ```
