@@ -42,7 +42,7 @@ reqs = [
         ("S_Landsberger_Allee",5,"S_Neukolln"),
         ("S_Landsberger_Allee",5,"S_Bornholmer_Strasse"),
         ("S_Landsberger_Allee",5,"S_Schoneweide"),
-        ("Landsbg_Petersbg",   5,"Georg_Knorr"),
+        ("Bersarinplatz",      5,"Lichtenberg_Gudrunstr"),
         ("Bersarinplatz",      5,"Wilhelminenhofstr")
        ]
 num_departures = 5
