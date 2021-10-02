@@ -33,7 +33,10 @@ class API:
         r = self.create_request("departureBoard?id={}{}{}".format(station_id, p_dir, p_journeys))
         if verbose:
             print(r)
-        j = urequests.get(r).json()
+        g = urequests.get(r)
+        if verbose:
+            print(g.content)
+        j = g.json()
 
         times = []
         if "Departure" in j:
