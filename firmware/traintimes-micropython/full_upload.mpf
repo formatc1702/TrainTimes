@@ -1,0 +1,12 @@
+open tty.usbserial-0001
+put src/apikey.txt
+put src/boot.py
+put src/main.py
+put src/ntp.py
+put src/server.py
+put src/stationids.txt
+put src/vbbapi.py
+put src/wifi.py
+put src/wificonfig.txt
+ls
+close
