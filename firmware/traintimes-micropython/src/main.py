@@ -10,7 +10,7 @@ import vbbapi
 import wifi
 
 PIN_BTN_SUMMERTIME = 4  # use switch on GPIO 4 (D2)
-UART_ID = 1  # TX: GPIO2=D4, RX: none? (GPIO is also LED!)
+UART_ID = 2  # TX: GPIO17, RX: GPIO16 (unused)
 UART_BAUDRATE = 9600
 
 debug_free_memory(2)
