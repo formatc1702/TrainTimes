@@ -15,8 +15,7 @@ class API:
 
     def get_station_id(self, station_name, debug_level=0):
         r = self.create_request("location.name?input={}".format(station_name))
-        if debug_level:
-            print(r)
+        debug(2, r)
         j = urequests.get(r).json()
         return j["stopLocationOrCoordLocation"][0]["StopLocation"]["extId"]
 
@@ -31,11 +30,9 @@ class API:
             p_dir = ""
 
         r = self.create_request("departureBoard?id={}{}{}".format(station_id, p_dir, p_journeys))
-        if debug_level >= 2:
-            print(r)
+        debug(2, r)
         g = urequests.get(r)
-        if debug_level >= 3:
-            print(g.content)
+        debug(3, g.content)
         j = g.json()
 
         times = []
@@ -44,13 +41,11 @@ class API:
                 if "rtTime" in departure:
                     datestring = departure["rtDate"]
                     timestring = departure["rtTime"]
-                    if debug_level >= 2:
-                        print("REAL TIME")
+                    debug(2, "REAL TIME")
                 else:
                     datestring = departure["date"]
                     timestring = departure["time"]
-                    if debug_level >= 2:
-                        print ("NOT!!!")
+                    debug(2, "NOT!!!")
 
                 year, month,  day    = [int(i) for i in datestring.split('-')]
                 hour, minute, second = [int(i) for i in timestring.split(':')]

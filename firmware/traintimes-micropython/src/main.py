@@ -17,18 +17,16 @@ debug(1, 'Getting current time ', end='')
 pin_summertime = Pin(4, Pin.IN, Pin.PULL_UP)
 if pin_summertime.value() == 0:  # swtich is pressed (low) = summertime
     summertime = True
-    debug(1,'using CEST...')
+    debug(1, 'using CEST...')
 else:
     summertime = False
-    debug(,1'using CET...')
+    debug(1, 'using CET...')
 
 # get current time from NTP server
 now = ntp.get_time(summertime)
-if debug_level:
-    print(time.localtime(now))
+debug(1, time.localtime(now))
 
-if debug_level:
-    print('Connecting to VBB server...')
+debug(1, 'Connecting to VBB server...')
 # connect to VBB API server
 a = vbbapi.API()
 def get_departures(origin, direction): # shorthand function
@@ -48,8 +46,7 @@ reqs = [
 num_departures = 5
 
 # read station IDs
-if debug_level:
-    print('Reading station IDs...')
+debug(1, 'Reading station IDs...')
 station_ids = {}
 # check file for cached IDs
 with open("stationids.txt","r") as f:
@@ -58,23 +55,19 @@ with open("stationids.txt","r") as f:
         if line:
             sid, sname = line.split(' ')
             station_ids[sname.strip()] = sid.strip()
-            if debug_level >= 2:
-                print("ID {} is {}".format(sid.strip(), sname.strip()))
+            debug(2, f'ID {sid.strip()} is {sname.strip()}')
         else:
             break
 # get missing IDs from API
 for origin, walktime, direction in reqs:
     if not origin in station_ids:
         station_ids[origin]    = a.get_station_id(origin)
-        if debug_level >= 2:
-            print("New ID {} is {}".format(station_ids[origin],    origin))
+        debug(2, "New ID {} is {}".format(station_ids[origin],    origin))
     if not direction in station_ids:
         station_ids[direction] = a.get_station_id(direction)
-        if debug_level >= 2:
-            print("New ID {} is {}".format(station_ids[direction], direction))
+        debug(2, "New ID {} is {}".format(station_ids[direction], direction))
 # finished
-if debug_level:
-    print("Got all IDs.")
+debug(1, "Got all station IDs.")
 
 # free up some memory?
 gc.collect()
@@ -82,20 +75,17 @@ if debug_level >= 2:
     print(gc.mem_free())
 
 # get departure times
-if debug_level:
-    print()
+debug(1, 'Getting departure times...')
 out = []
 for origin, walktime, direction in reqs: # iterate over each origin/direction tuple
-    if debug_level:
-        print("{} -> {}".format(origin, direction))
+    debug(2, "{} -> {}".format(origin, direction))
     # request departure times from API
     departures = get_departures(station_ids[origin], station_ids[direction])
     _out = []
     for t in departures: # iterate over each received departure time
         # how much until departure?
         timediff = t - now
-        if debug_level:
-            print(t, time.localtime(t), timediff,
+        debug(2, t, time.localtime(t), timediff,
                   "departs in {: 03}:{:02}".format(timediff // 60, timediff % 60))
         # should we keep this departure?
         if timediff > 0: # is it in the future?
