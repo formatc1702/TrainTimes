@@ -1,6 +1,8 @@
 import urequests
 import utime as time
 
+from debugging import debug
+
 class API:
     def __init__(self):
         self.base_url = "http://fahrinfo.vbb.de/restproxy/2.4/"

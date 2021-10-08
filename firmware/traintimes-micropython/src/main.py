@@ -4,17 +4,22 @@ import gc
 from machine import UART, Pin
 import utime as time
 # custom modules
-import debug
+from debugging import debug, debug_level, debug_free_memory
 import ntp
 import vbbapi
 import wifi
 
+PIN_BTN_SUMMERTIME = 4  # use switch on GPIO 4 (D2)
+UART_ID = 1  # TX: GPIO2=D4, RX: none? (GPIO is also LED!)
+UART_BAUDRATE = 9600
+
+debug_free_memory(2)
+
 # connect to WiFi
 w = wifi.WiFi()
 
-# use switch on GPIO 4 (D2)
 debug(1, 'Getting current time ', end='')
-pin_summertime = Pin(4, Pin.IN, Pin.PULL_UP)
+pin_summertime = Pin(PIN_BTN_SUMMERTIME, Pin.IN, Pin.PULL_UP)
 if pin_summertime.value() == 0:  # swtich is pressed (low) = summertime
     summertime = True
     debug(1, 'using CEST...')
@@ -34,14 +39,14 @@ def get_departures(origin, direction): # shorthand function
 
 # configure the request
 reqs = [
-        ("Strassmannstr",      2,"Eberswalder"),
-        ("Strassmannstr",      2,"Frankfurter_Tor"),
-        ("S_Landsberger_Allee",5,"S_Gesundbrunnen"),
-        ("S_Landsberger_Allee",5,"S_Neukolln"),
-        ("S_Landsberger_Allee",5,"S_Bornholmer_Strasse"),
-        ("S_Landsberger_Allee",5,"S_Schoneweide"),
-        ("Bersarinplatz",      5,"Lichtenberg_Gudrunstr"),
-        ("Bersarinplatz",      5,"Wilhelminenhofstr")
+        ('Strassmannstr',      2,'Eberswalder'),
+        ('Strassmannstr',      2,'Frankfurter_Tor'),
+        ('S_Landsberger_Allee',5,'S_Gesundbrunnen'),
+        ('S_Landsberger_Allee',5,'S_Neukolln'),
+        ('S_Landsberger_Allee',5,'S_Bornholmer_Strasse'),
+        ('S_Landsberger_Allee',5,'S_Schoneweide'),
+        ('Bersarinplatz',      5,'Lichtenberg_Gudrunstr'),
+        ('Bersarinplatz',      5,'Wilhelminenhofstr')
        ]
 num_departures = 5
 
@@ -49,7 +54,7 @@ num_departures = 5
 debug(1, 'Reading station IDs...')
 station_ids = {}
 # check file for cached IDs
-with open("stationids.txt","r") as f:
+with open('stationids.txt','r') as f:
     while True:
         line = f.readline()
         if line:
@@ -62,23 +67,22 @@ with open("stationids.txt","r") as f:
 for origin, walktime, direction in reqs:
     if not origin in station_ids:
         station_ids[origin]    = a.get_station_id(origin)
-        debug(2, "New ID {} is {}".format(station_ids[origin],    origin))
+        debug(2, 'New ID {} is {}'.format(station_ids[origin],    origin))
     if not direction in station_ids:
         station_ids[direction] = a.get_station_id(direction)
-        debug(2, "New ID {} is {}".format(station_ids[direction], direction))
+        debug(2, 'New ID {} is {}'.format(station_ids[direction], direction))
 # finished
-debug(1, "Got all station IDs.")
+debug(1, 'Got all station IDs.')
 
 # free up some memory?
 gc.collect()
-if debug_level >= 2:
-    print(gc.mem_free())
+debug_free_memory(2)
 
 # get departure times
 debug(1, 'Getting departure times...')
 out = []
 for origin, walktime, direction in reqs: # iterate over each origin/direction tuple
-    debug(2, "{} -> {}".format(origin, direction))
+    debug(2, '{} -> {}'.format(origin, direction))
     # request departure times from API
     departures = get_departures(station_ids[origin], station_ids[direction])
     _out = []
@@ -86,50 +90,54 @@ for origin, walktime, direction in reqs: # iterate over each origin/direction tu
         # how much until departure?
         timediff = t - now
         debug(2, t, time.localtime(t), timediff,
-                  "departs in {: 03}:{:02}".format(timediff // 60, timediff % 60))
+                  'departs in {: 03}:{:02}'.format(timediff // 60, timediff % 60))
         # should we keep this departure?
         if timediff > 0: # is it in the future?
             if timediff < 99 * 60: # is it in the next 99 mins but at least 2 min in future?
                 if timediff > walktime * 60:
                     _out.append(timediff)
             else: # add placeholder if not
-                _out.append("-999")
+                _out.append('-999')
     # add placeholders for padding
     if len(_out) < num_departures:
         for i in range(len(_out), num_departures):
-            _out.extend(["-999"])
+            _out.extend(['-999'])
     # add to list
     out.append(_out)
 
     gc.collect()
-    if debug_level:
-        print(gc.mem_free())
+    debug_free_memory(2)
 
 # Output data to Arduino
-print("BEGIN SEND")
-uart = UART(1,9600) # TX: GPIO2=D4, RX: none? (GPIO is also LED!)
+debug(1, '')
+debug(1, 'Sending data to UART...', end='')
+uart = UART(UART_ID, UART_BAUDRATE)
 time.sleep(0.1)
 uart.write('{')
 uart.write('\n')
 for dirs in out:
     for deps in dirs:
-        uart.write("{} \n".format(deps))
+        uart.write('{} \n'.format(deps))
     time.sleep(0.05) # give Arduino time to read the buffer
-uart.write("}")
+uart.write('}')
 uart.write('\n')
 uart.write('\n')
-print("END SEND")
-print("")
+debug(1, ' done.')
+
+debug(2, '')
+debug(2, 'UART payload:')
 for dirs in out:
     for deps in dirs:
-        print     ("{}\t".format(deps), end="")
-        # print     ("{:>4} \t".format(deps), end="")
-    print("")
-print("")
+        debug(2, '{}\t'.format(deps), end='')
+    debug(2, '')
+debug(2, '')
+
+debug(1, 'Finished!')
 
 if not debug_level:
+    debug(0, 'Sleeping...')
     w.wlan.active(False)
-    print("Good night!")
     esp.deepsleep()
 else:
-    print("Finished!")
+    debug(1, f'Not sleeping (debug level {debug_level})')
+    debug(1, '')
