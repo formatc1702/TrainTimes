@@ -1,4 +1,4 @@
-open tty.usbserial-0001
+open tty.usbserial-1410
 lcd src/
 mput .*\.py
 mput .*\.txt
