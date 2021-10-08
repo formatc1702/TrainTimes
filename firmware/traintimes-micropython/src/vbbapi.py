@@ -13,14 +13,14 @@ class API:
     def create_request(self, command):
         return "{}{}&{}".format(self.base_url, command, self.tail)
 
-    def get_station_id(self, station_name, verbose=False):
+    def get_station_id(self, station_name, debug_level=0):
         r = self.create_request("location.name?input={}".format(station_name))
-        if verbose:
+        if debug_level:
             print(r)
         j = urequests.get(r).json()
         return j["stopLocationOrCoordLocation"][0]["StopLocation"]["extId"]
 
-    def get_departures(self, station_id, max_journeys=0, direction_id="", verbose=False):
+    def get_departures(self, station_id, max_journeys=0, direction_id="", debug_level=False):
         if max_journeys > 0:
             p_journeys = "&maxJourneys={}".format(max_journeys)
         else:
@@ -31,10 +31,10 @@ class API:
             p_dir = ""
 
         r = self.create_request("departureBoard?id={}{}{}".format(station_id, p_dir, p_journeys))
-        if verbose:
+        if debug_level >= 2:
             print(r)
         g = urequests.get(r)
-        if verbose:
+        if debug_level >= 3:
             print(g.content)
         j = g.json()
 
@@ -44,12 +44,12 @@ class API:
                 if "rtTime" in departure:
                     datestring = departure["rtDate"]
                     timestring = departure["rtTime"]
-                    if verbose:
+                    if debug_level >= 2:
                         print("REAL TIME")
                 else:
                     datestring = departure["date"]
                     timestring = departure["time"]
-                    if verbose:
+                    if debug_level >= 2:
                         print ("NOT!!!")
 
                 year, month,  day    = [int(i) for i in datestring.split('-')]
