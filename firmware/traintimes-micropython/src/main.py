@@ -67,10 +67,10 @@ with open('stationids.txt','r') as f:
 for origin, walktime, direction in reqs:
     if not origin in station_ids:
         station_ids[origin]    = a.get_station_id(origin)
-        debug(2, 'New ID {} is {}'.format(station_ids[origin],    origin))
+        debug(2, f'New ID {station_ids[origin]} is {origin}')
     if not direction in station_ids:
         station_ids[direction] = a.get_station_id(direction)
-        debug(2, 'New ID {} is {}'.format(station_ids[direction], direction))
+        debug(2, f'New ID {station_ids[direction]} is {direction}')
 # finished
 debug(1, 'Got all station IDs.')
 
@@ -82,7 +82,7 @@ debug_free_memory(2)
 debug(1, 'Getting departure times...')
 out = []
 for origin, walktime, direction in reqs: # iterate over each origin/direction tuple
-    debug(2, '{} -> {}'.format(origin, direction))
+    debug(2, f'{origin} -> {direction}')
     # request departure times from API
     departures = get_departures(station_ids[origin], station_ids[direction])
     _out = []
@@ -117,7 +117,7 @@ uart.write('{')
 uart.write('\n')
 for dirs in out:
     for deps in dirs:
-        uart.write('{} \n'.format(deps))
+        uart.write(f'{deps} \n')
     time.sleep(0.05) # give Arduino time to read the buffer
 uart.write('}')
 uart.write('\n')
@@ -128,7 +128,7 @@ debug(2, '')
 debug(2, 'UART payload:')
 for dirs in out:
     for deps in dirs:
-        debug(2, '{}\t'.format(deps), end='')
+        debug(2, f'{deps}\t', end='')
     debug(2, '')
 debug(2, '')
 

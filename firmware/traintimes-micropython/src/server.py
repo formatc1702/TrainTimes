@@ -27,18 +27,18 @@ while True:
         for i in all_params:
             k, v = i.split('=')
             params[k] = v
-            print('{}: {}'.format(k,v))
+            print(f'{k}: {v}')
 
         # do stuff based on parameters
 
         # update wifi credentials
         if 'savewifi' in params:
             print('Changing the wifi credentials')
-            print('New SSID: {}'.format(params['ssid']))
-            print('New PW:   {}'.format(params['pw']))
+            print(f'New SSID: {params['ssid']}')
+            print(f'New PW:   {params['pw']}')
             with open('wificonfig.txt','w') as f:
-                f.write('{}\n'.format(params['ssid']))
-                f.write('{}\n'.format(params['pw']))
+                f.write(f'{params['ssid']}\n')
+                f.write(f'{params['pw']}\n')
 
     else:
         params = {}
@@ -50,7 +50,7 @@ while True:
             real_ssid = f.readline().strip()
             real_pw   = f.readline().strip()
         print('Got these credentials from file:')
-        print('{} : {}'.format(real_ssid, real_pw))
+        print(f'{real_ssid} : {real_pw}')
     except:
         print('Error reading wifi config file')
         real_ssid = ''
@@ -70,7 +70,7 @@ while True:
                 for old, new in replacements.items():
                     if old in line:
                         line = line.replace(old, new)
-                        print('Replaced {} with {}'.format(old, new))
+                        print(f'Replaced {old} with {new}')
 
                 conn.send(line)
             else:

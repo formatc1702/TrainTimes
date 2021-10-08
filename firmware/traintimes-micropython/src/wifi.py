@@ -17,7 +17,7 @@ class WiFi():
 
         for i in range(0,60): # attempt to connect
             ip, mask, gateway, dns = self.wlan.ifconfig()
-            if ip == 0.0.0.0: #not connected
+            if ip == '0.0.0.0': #not connected
                 debug(1, '.', end='')
                 sleep(1)
             else: #connected!

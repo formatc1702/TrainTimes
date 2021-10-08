@@ -10,28 +10,28 @@ class API:
         with open('apikey.txt','r') as f:
             self.api_key =  f.readline().rstrip()
 
-        self.tail = 'format=json&accessId={}'.format(self.api_key)
+        self.tail = f'format=json&accessId={self.api_key}'
 
     def create_request(self, command):
-        return '{}{}&{}'.format(self.base_url, command, self.tail)
+        return f'{self.base_url}{command}&{self.tail}'
 
     def get_station_id(self, station_name, debug_level=0):
-        r = self.create_request('location.name?input={}'.format(station_name))
+        r = self.create_request(f'location.name?input={station_name}')
         debug(2, r)
         j = urequests.get(r).json()
         return j['stopLocationOrCoordLocation'][0]['StopLocation']['extId']
 
     def get_departures(self, station_id, max_journeys=0, direction_id='', debug_level=False):
         if max_journeys > 0:
-            p_journeys = '&maxJourneys={}'.format(max_journeys)
+            p_journeys = f'&maxJourneys={max_journeys}'
         else:
             p_journeys = ''
         if direction_id != '':
-            p_dir = '&direction={}'.format(direction_id)
+            p_dir = f'&direction={direction_id}'
         else:
             p_dir = ''
 
-        r = self.create_request('departureBoard?id={}{}{}'.format(station_id, p_dir, p_journeys))
+        r = self.create_request(f'departureBoard?id={station_id}{p_dir}{p_journeys}')
         debug(2, r)
         g = urequests.get(r)
         debug(3, g.content)
