@@ -5,49 +5,49 @@ from debugging import debug
 
 class API:
     def __init__(self):
-        self.base_url = "http://fahrinfo.vbb.de/restproxy/2.4/"
+        self.base_url = 'http://fahrinfo.vbb.de/restproxy/2.4/'
 
-        with open("apikey.txt","r") as f:
+        with open('apikey.txt','r') as f:
             self.api_key =  f.readline().rstrip()
 
-        self.tail = "format=json&accessId={}".format(self.api_key)
+        self.tail = 'format=json&accessId={}'.format(self.api_key)
 
     def create_request(self, command):
-        return "{}{}&{}".format(self.base_url, command, self.tail)
+        return '{}{}&{}'.format(self.base_url, command, self.tail)
 
     def get_station_id(self, station_name, debug_level=0):
-        r = self.create_request("location.name?input={}".format(station_name))
+        r = self.create_request('location.name?input={}'.format(station_name))
         debug(2, r)
         j = urequests.get(r).json()
-        return j["stopLocationOrCoordLocation"][0]["StopLocation"]["extId"]
+        return j['stopLocationOrCoordLocation'][0]['StopLocation']['extId']
 
-    def get_departures(self, station_id, max_journeys=0, direction_id="", debug_level=False):
+    def get_departures(self, station_id, max_journeys=0, direction_id='', debug_level=False):
         if max_journeys > 0:
-            p_journeys = "&maxJourneys={}".format(max_journeys)
+            p_journeys = '&maxJourneys={}'.format(max_journeys)
         else:
-            p_journeys = ""
-        if direction_id != "":
-            p_dir = "&direction={}".format(direction_id)
+            p_journeys = ''
+        if direction_id != '':
+            p_dir = '&direction={}'.format(direction_id)
         else:
-            p_dir = ""
+            p_dir = ''
 
-        r = self.create_request("departureBoard?id={}{}{}".format(station_id, p_dir, p_journeys))
+        r = self.create_request('departureBoard?id={}{}{}'.format(station_id, p_dir, p_journeys))
         debug(2, r)
         g = urequests.get(r)
         debug(3, g.content)
         j = g.json()
 
         times = []
-        if "Departure" in j:
-            for departure in j["Departure"]:
-                if "rtTime" in departure:
-                    datestring = departure["rtDate"]
-                    timestring = departure["rtTime"]
-                    debug(2, "REAL TIME")
+        if 'Departure' in j:
+            for departure in j['Departure']:
+                if 'rtTime' in departure:
+                    datestring = departure['rtDate']
+                    timestring = departure['rtTime']
+                    debug(2, 'REAL TIME')
                 else:
-                    datestring = departure["date"]
-                    timestring = departure["time"]
-                    debug(2, "NOT!!!")
+                    datestring = departure['date']
+                    timestring = departure['time']
+                    debug(2, 'NOT!!!')
 
                 year, month,  day    = [int(i) for i in datestring.split('-')]
                 hour, minute, second = [int(i) for i in timestring.split(':')]
