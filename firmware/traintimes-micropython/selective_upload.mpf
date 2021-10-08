@@ -1,0 +1,6 @@
+open tty.usbserial-1410
+lcd src/
+mput main.py
+mput debugging.py
+ls
+close
